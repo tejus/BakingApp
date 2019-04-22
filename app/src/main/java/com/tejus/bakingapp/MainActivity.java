@@ -1,5 +1,6 @@
 package com.tejus.bakingapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
@@ -22,5 +23,12 @@ public class MainActivity extends AppCompatActivity {
         mListView = findViewById(R.id.lv_main);
         mAdapter = new MainAdapter(this, recipes);
         mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener((parent, view, position, id) -> {
+            Intent intent = new Intent(this, DetailActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("position", position);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        });
     }
 }
