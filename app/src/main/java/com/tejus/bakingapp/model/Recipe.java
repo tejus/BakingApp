@@ -1,14 +1,16 @@
 package com.tejus.bakingapp.model;
 
+import java.util.List;
+
 public class Recipe {
     private int id;
     private String name;
-    private Ingredients[] ingredients;
-    private Steps[] steps;
+    private List<Ingredient> ingredients;
+    private List<Step> steps;
     private int servings;
     private String image;
 
-    public Recipe(int id, String name, Ingredients[] ingredients, Steps[] steps, int servings, String image) {
+    public Recipe(int id, String name, List<Ingredient> ingredients, List<Step> steps, int servings, String image) {
         this.id = id;
         this.name = name;
         this.ingredients = ingredients;
@@ -33,19 +35,19 @@ public class Recipe {
         this.name = name;
     }
 
-    public Ingredients[] getIngredients() {
+    public List<Ingredient> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(Ingredients[] ingredients) {
+    public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
     }
 
-    public Steps[] getSteps() {
+    public List<Step> getSteps() {
         return steps;
     }
 
-    public void setSteps(Steps[] steps) {
+    public void setSteps(List<Step> steps) {
         this.steps = steps;
     }
 

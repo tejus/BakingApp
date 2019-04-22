@@ -1,10 +1,11 @@
 package com.tejus.bakingapp.model;
 
-public class Ingredients {
+public class Ingredient {
     private double quantity;
     private String measure;
+    private String ingredient;
 
-    public Ingredients(double quantity, String measure, String ingredient) {
+    public Ingredient(double quantity, String measure, String ingredient) {
         this.quantity = quantity;
         this.measure = measure;
         this.ingredient = ingredient;
@@ -33,6 +34,4 @@ public class Ingredients {
     public void setIngredient(String ingredient) {
         this.ingredient = ingredient;
     }
-
-    private String ingredient;
 }
