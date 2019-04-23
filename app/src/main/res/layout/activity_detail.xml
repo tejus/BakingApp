@@ -12,6 +12,13 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="56dp" />
 
+    <View
+        android:id="@+id/background_dim_detail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:visibility="gone" />
+
     <include
         android:id="@+id/include_bottom_sheet"
         layout="@layout/bottomsheet_detail" />

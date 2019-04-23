@@ -33,6 +33,7 @@ public class DetailActivity extends AppCompatActivity {
     private int mSheetState;
     private ImageView mIvBack;
     private ImageView mIvForward;
+    private View mBgView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,17 +92,22 @@ public class DetailActivity extends AppCompatActivity {
                 mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
         });
 
+        mBgView = findViewById(R.id.background_dim_detail);
     }
 
     private BottomSheetBehavior.BottomSheetCallback mSheetCallback = new BottomSheetBehavior.BottomSheetCallback() {
         @Override
         public void onStateChanged(@NonNull View view, int i) {
             mSheetState = i;
+            if (mSheetState == BottomSheetBehavior.STATE_COLLAPSED) {
+                mBgView.setVisibility(View.GONE);
+            }
         }
 
         @Override
         public void onSlide(@NonNull View view, float v) {
-
+            mBgView.setVisibility(View.VISIBLE);
+            mBgView.setAlpha(v);
         }
     };
 
