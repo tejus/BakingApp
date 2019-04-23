@@ -108,6 +108,7 @@ public class DetailActivity extends AppCompatActivity {
 
                 if (!rect.contains((int) ev.getRawX(), (int) ev.getRawY())) {
                     mBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    return true;
                 }
             }
         }
