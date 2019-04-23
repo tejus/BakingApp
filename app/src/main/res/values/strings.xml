@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Baking App</string>
     <string name="main_serves">Serves %1$d</string>
+    <string name="step_number">Step %1$d</string>
 </resources>

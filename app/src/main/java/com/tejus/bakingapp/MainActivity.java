@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         mListView.setOnItemClickListener((parent, view, position, id) -> {
             Intent intent = new Intent(this, DetailActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putInt("position", position);
+            bundle.putInt(DetailActivity.EXTRA_POSITION_KEY, position);
             intent.putExtras(bundle);
             startActivity(intent);
         });
