@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ public class DetailActivity extends AppCompatActivity {
     public static final String EXTRA_POSITION_KEY = "position";
 
     private FragmentManager mFragmentManager;
+    private ViewPager mViewPager;
     private DetailPagerAdapter mPagerAdapter;
     private Fragment mIngredientsFragment;
     private Recipe mRecipe;
@@ -29,6 +31,8 @@ public class DetailActivity extends AppCompatActivity {
     private LinearLayout mSheetLayout;
     private BottomSheetBehavior mBottomSheet;
     private int mSheetState;
+    private ImageView mIvBack;
+    private ImageView mIvForward;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +40,7 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         mFragmentManager = getSupportFragmentManager();
-        ViewPager viewPager = findViewById(R.id.viewpager_detail);
+        mViewPager = findViewById(R.id.viewpager_detail);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null && bundle.containsKey(EXTRA_POSITION_KEY)) {
@@ -53,7 +57,7 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         mPagerAdapter = new DetailPagerAdapter(mFragmentManager, mRecipe);
-        viewPager.setAdapter(mPagerAdapter);
+        mViewPager.setAdapter(mPagerAdapter);
 
         mIngredientsFragment = IngredientsFragment.newInstance(mRecipe);
 
@@ -74,6 +78,17 @@ public class DetailActivity extends AppCompatActivity {
             } else if (mSheetState == BottomSheetBehavior.STATE_COLLAPSED) {
                 mBottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED);
             }
+        });
+
+        mIvBack = findViewById(R.id.iv_bottom_sheet_back);
+        mIvForward = findViewById(R.id.iv_bottom_sheet_forward);
+        mIvForward.setOnClickListener(v -> {
+            if (mViewPager.getCurrentItem() < mPagerAdapter.getCount() - 1)
+                mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
+        });
+        mIvBack.setOnClickListener(v -> {
+            if (mViewPager.getCurrentItem() > 0)
+                mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
         });
 
     }
