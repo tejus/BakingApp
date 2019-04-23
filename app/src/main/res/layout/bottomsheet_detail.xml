@@ -3,14 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorAccent"
     android:orientation="vertical"
     app:behavior_peekHeight="72dp"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
     <RelativeLayout
+        android:id="@+id/bar_bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="72dp">
+        android:layout_height="72dp"
+        android:background="@color/colorAccent">
 
         <TextView
             android:layout_width="wrap_content"
@@ -25,5 +26,6 @@
     <FrameLayout
         android:id="@+id/frame_ingr"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@android:color/background_light" />
 </LinearLayout>
