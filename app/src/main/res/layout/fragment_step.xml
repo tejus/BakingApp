@@ -9,6 +9,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         tools:context=".StepFragment">
 
         <TextView
@@ -68,6 +69,5 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_step_tempurl" />
-
     </android.support.constraint.ConstraintLayout>
 </android.support.v4.widget.NestedScrollView>

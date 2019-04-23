@@ -12,12 +12,10 @@ import java.util.List;
 
 public class DetailPagerAdapter extends FragmentPagerAdapter {
 
-    private Fragment ingredientFragment;
     private List<Fragment> fragmentList;
 
     DetailPagerAdapter(FragmentManager fm, Recipe recipe) {
         super(fm);
-        ingredientFragment = IngredientsFragment.newInstance(recipe);
         fragmentList = new ArrayList<>();
         for (Step step : recipe.getSteps()) {
             Fragment fragment = StepFragment.newInstance(step);
@@ -27,14 +25,11 @@ public class DetailPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int i) {
-        if (i == 0) {
-            return ingredientFragment;
-        }
-        return fragmentList.get(i - 1);
+        return fragmentList.get(i);
     }
 
     @Override
     public int getCount() {
-        return fragmentList.size() + 1;
+        return fragmentList.size();
     }
 }

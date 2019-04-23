@@ -1,6 +1,8 @@
 package com.tejus.bakingapp;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +14,9 @@ public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION_KEY = "position";
 
+    private FragmentManager mFragmentManager;
     private DetailPagerAdapter mPagerAdapter;
+    private Fragment mIngredientsFragment;
     private Recipe mRecipe;
 
     @Override
@@ -20,6 +24,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        mFragmentManager = getSupportFragmentManager();
         ViewPager viewPager = findViewById(R.id.viewpager_detail);
 
         Bundle bundle = getIntent().getExtras();
@@ -36,7 +41,14 @@ public class DetailActivity extends AppCompatActivity {
             actionBar.setTitle(mRecipe.getName());
         }
 
-        mPagerAdapter = new DetailPagerAdapter(getSupportFragmentManager(), mRecipe);
+        mPagerAdapter = new DetailPagerAdapter(mFragmentManager, mRecipe);
         viewPager.setAdapter(mPagerAdapter);
+
+        mIngredientsFragment = IngredientsFragment.newInstance(mRecipe);
+
+        mFragmentManager.beginTransaction()
+                .add(R.id.frame_ingr, mIngredientsFragment)
+                .commit();
+
     }
 }
