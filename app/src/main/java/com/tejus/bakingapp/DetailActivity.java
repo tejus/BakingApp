@@ -29,7 +29,7 @@ public class DetailActivity extends AppCompatActivity {
     private Recipe mRecipe;
 
     private LinearLayout mSheetLayout;
-    private BottomSheetBehavior mBottomSheet;
+    private BottomSheetBehavior mSheetBehavior;
     private int mSheetState;
     private ImageView mIvBack;
     private ImageView mIvForward;
@@ -39,9 +39,6 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
-        mFragmentManager = getSupportFragmentManager();
-        mViewPager = findViewById(R.id.viewpager_detail);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null && bundle.containsKey(EXTRA_POSITION_KEY)) {
@@ -57,32 +54,49 @@ public class DetailActivity extends AppCompatActivity {
             actionBar.setTitle(mRecipe.getName());
         }
 
+        mViewPager = findViewById(R.id.viewpager_detail);
+        mSheetLayout = findViewById(R.id.include_bottom_sheet);
+        mIvBack = findViewById(R.id.iv_bottom_sheet_back);
+        mIvForward = findViewById(R.id.iv_bottom_sheet_forward);
+        mBgView = findViewById(R.id.background_dim_detail);
+
+        mFragmentManager = getSupportFragmentManager();
+
         mPagerAdapter = new DetailPagerAdapter(mFragmentManager, mRecipe);
         mViewPager.setAdapter(mPagerAdapter);
 
         mIngredientsFragment = IngredientsFragment.newInstance(mRecipe);
-
         mFragmentManager.beginTransaction()
                 .add(R.id.frame_ingr, mIngredientsFragment)
                 .commit();
 
-        mSheetLayout = findViewById(R.id.include_bottom_sheet);
+        mSheetBehavior = BottomSheetBehavior.from(mSheetLayout);
+        mSheetState = mSheetBehavior.getState();
+        mSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int i) {
+                mSheetState = i;
+                if (mSheetState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    mBgView.setVisibility(View.GONE);
+                }
+            }
 
-        mBottomSheet = BottomSheetBehavior.from(mSheetLayout);
-        mBottomSheet.setBottomSheetCallback(mSheetCallback);
-        mSheetState = mBottomSheet.getState();
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+                mBgView.setVisibility(View.VISIBLE);
+                mBgView.setAlpha(v);
+            }
+        });
 
         RelativeLayout sheetBar = findViewById(R.id.bar_bottom_sheet);
         sheetBar.setOnClickListener(v -> {
             if (mSheetState == BottomSheetBehavior.STATE_EXPANDED) {
-                mBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                mSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             } else if (mSheetState == BottomSheetBehavior.STATE_COLLAPSED) {
-                mBottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED);
+                mSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             }
         });
 
-        mIvBack = findViewById(R.id.iv_bottom_sheet_back);
-        mIvForward = findViewById(R.id.iv_bottom_sheet_forward);
         mIvForward.setOnClickListener(v -> {
             if (mViewPager.getCurrentItem() < mPagerAdapter.getCount() - 1)
                 mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
@@ -91,30 +105,12 @@ public class DetailActivity extends AppCompatActivity {
             if (mViewPager.getCurrentItem() > 0)
                 mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
         });
-
-        mBgView = findViewById(R.id.background_dim_detail);
     }
-
-    private BottomSheetBehavior.BottomSheetCallback mSheetCallback = new BottomSheetBehavior.BottomSheetCallback() {
-        @Override
-        public void onStateChanged(@NonNull View view, int i) {
-            mSheetState = i;
-            if (mSheetState == BottomSheetBehavior.STATE_COLLAPSED) {
-                mBgView.setVisibility(View.GONE);
-            }
-        }
-
-        @Override
-        public void onSlide(@NonNull View view, float v) {
-            mBgView.setVisibility(View.VISIBLE);
-            mBgView.setAlpha(v);
-        }
-    };
 
     @Override
     public void onBackPressed() {
         if (mSheetState == BottomSheetBehavior.STATE_EXPANDED) {
-            mBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            mSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             return;
         }
         super.onBackPressed();
@@ -128,7 +124,7 @@ public class DetailActivity extends AppCompatActivity {
                 mSheetLayout.getGlobalVisibleRect(rect);
 
                 if (!rect.contains((int) ev.getRawX(), (int) ev.getRawY())) {
-                    mBottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    mSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                     return true;
                 }
             }
