@@ -11,9 +11,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tejus.bakingapp.model.Recipe;
@@ -26,15 +28,21 @@ public class DetailActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private DetailPagerAdapter mPagerAdapter;
     private Fragment mIngredientsFragment;
+    private Fragment mStepsFragment;
     private Recipe mRecipe;
 
     private LinearLayout mSheetLayout;
     private RelativeLayout mSheetBar;
-    private LinearLayout mSheetBarOverview;
+    private TextView mTvOverview;
+    private LinearLayout mSheetBarTabs;
     private BottomSheetBehavior mSheetBehavior;
     private int mSheetState;
     private ImageView mIvBack;
     private ImageView mIvForward;
+    private TextView mTvIngredients;
+    private TextView mTvSteps;
+    private FrameLayout mSheetIngredients;
+    private FrameLayout mSheetSteps;
     private View mBgView;
 
     @Override
@@ -59,10 +67,15 @@ public class DetailActivity extends AppCompatActivity {
         mViewPager = findViewById(R.id.viewpager_detail);
         mSheetLayout = findViewById(R.id.include_bottom_sheet);
         mSheetBar = findViewById(R.id.bar_bottom_sheet);
-        mSheetBarOverview = findViewById(R.id.bar_bottom_sheet_overview);
+        mTvOverview = findViewById(R.id.tv_bottom_sheet_bar_overview);
+        mSheetBarTabs = findViewById(R.id.bar_bottom_sheet_tabs);
         mIvBack = findViewById(R.id.iv_bottom_sheet_back);
         mIvForward = findViewById(R.id.iv_bottom_sheet_forward);
         mBgView = findViewById(R.id.background_dim_detail);
+        mTvIngredients = findViewById(R.id.tv_bottom_sheet_ingredients);
+        mTvSteps = findViewById(R.id.tv_bottom_sheet_steps);
+        mSheetIngredients = findViewById(R.id.frame_ingr);
+        mSheetSteps = findViewById(R.id.frame_steps);
 
         mFragmentManager = getSupportFragmentManager();
 
@@ -70,14 +83,16 @@ public class DetailActivity extends AppCompatActivity {
         mViewPager.setAdapter(mPagerAdapter);
 
         mIngredientsFragment = IngredientsFragment.newInstance(mRecipe);
+        mStepsFragment = StepsOverviewFragment.newInstance(mRecipe);
         mFragmentManager.beginTransaction()
                 .add(R.id.frame_ingr, mIngredientsFragment)
+                .add(R.id.frame_steps, mStepsFragment)
                 .commit();
 
         mSheetBehavior = BottomSheetBehavior.from(mSheetLayout);
         mSheetState = mSheetBehavior.getState();
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mSheetBar.getLayoutParams();
-        int startHeight = params.height;
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mSheetBarTabs.getLayoutParams();
+        final int initialMargin = params.topMargin;
         mSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int i) {
@@ -93,13 +108,13 @@ public class DetailActivity extends AppCompatActivity {
                 mBgView.setAlpha(v);
                 mIvBack.setTranslationX(-v * mIvBack.getWidth());
                 mIvForward.setTranslationX(v * mIvForward.getWidth());
-                params.height = (int) (startHeight + v * startHeight);
-                mSheetBar.setLayoutParams(params);
-                mSheetBarOverview.setElevation((4 - 4 * v) * getResources().getDisplayMetrics().density);
+                mTvOverview.setTranslationY(-v * mTvOverview.getHeight());
+                params.topMargin = (int) (initialMargin - v * initialMargin);
+                mSheetBarTabs.setLayoutParams(params);
             }
         });
 
-        mSheetBarOverview.setOnClickListener(v -> {
+        mSheetBar.setOnClickListener(v -> {
             if (mSheetState == BottomSheetBehavior.STATE_EXPANDED) {
                 mSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             } else if (mSheetState == BottomSheetBehavior.STATE_COLLAPSED) {
@@ -112,10 +127,25 @@ public class DetailActivity extends AppCompatActivity {
                     && mSheetState == BottomSheetBehavior.STATE_COLLAPSED)
                 mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
         });
+
         mIvBack.setOnClickListener(v -> {
             if (mViewPager.getCurrentItem() > 0
                     && mSheetState == BottomSheetBehavior.STATE_COLLAPSED)
                 mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
+        });
+
+        mTvIngredients.setOnClickListener(v -> {
+            mSheetSteps.setVisibility(View.INVISIBLE);
+            mSheetIngredients.setVisibility(View.VISIBLE);
+            mTvIngredients.setTextColor(getColor(R.color.colorButtonActive));
+            mTvSteps.setTextColor(getColor(android.R.color.black));
+        });
+
+        mTvSteps.setOnClickListener(v -> {
+            mSheetIngredients.setVisibility(View.INVISIBLE);
+            mSheetSteps.setVisibility(View.VISIBLE);
+            mTvIngredients.setTextColor(getColor(android.R.color.black));
+            mTvSteps.setTextColor(getColor(R.color.colorButtonActive));
         });
     }
 

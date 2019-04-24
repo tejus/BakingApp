@@ -11,34 +11,63 @@
         android:id="@+id/bar_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/colorAccent">
+        android:background="@color/colorAccent"
+        android:elevation="4dp">
+
+        <ImageView
+            android:id="@+id/iv_bottom_sheet_back"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentStart="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:scaleType="center"
+            android:src="@drawable/outline_chevron_left_black_24" />
+
+        <TextView
+            android:id="@+id/tv_bottom_sheet_bar_overview"
+            android:layout_width="fill_parent"
+            android:layout_height="56dp"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="@string/detail_overview"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/iv_bottom_sheet_forward"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentEnd="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:scaleType="center"
+            android:src="@drawable/outline_chevron_right_black_24" />
 
         <LinearLayout
             android:id="@+id/bar_bottom_sheet_tabs"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/colorAccent"
+            android:layout_marginTop="56dp"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tv_bottom_sheet_ingredients"
-                android:layout_width="56dp"
+                android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_gravity="center"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
                 android:text="Ingredients"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+                android:textColor="@color/colorButtonActive"
                 android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tv_bottom_sheet_steps"
-                android:layout_width="56dp"
+                android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_gravity="center"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
@@ -47,51 +76,23 @@
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
                 android:textSize="16sp" />
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/bar_bottom_sheet_overview"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_alignParentTop="true"
-            android:background="@color/colorAccent"
-            android:elevation="4dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/iv_bottom_sheet_back"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_weight="0"
-                android:clickable="true"
-                android:focusable="true"
-                android:scaleType="center"
-                android:src="@drawable/outline_chevron_left_black_24" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="56dp"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/detail_overview"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
-                android:textSize="16sp" />
-
-            <ImageView
-                android:id="@+id/iv_bottom_sheet_forward"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_weight="0"
-                android:clickable="true"
-                android:focusable="true"
-                android:scaleType="center"
-                android:src="@drawable/outline_chevron_right_black_24" />
-        </LinearLayout>
     </RelativeLayout>
 
     <FrameLayout
-        android:id="@+id/frame_ingr"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/background_light" />
+        android:layout_height="wrap_content"
+        android:background="@android:color/background_light">
+
+        <FrameLayout
+            android:id="@+id/frame_ingr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <FrameLayout
+            android:id="@+id/frame_steps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
+
+    </FrameLayout>
 </LinearLayout>

@@ -5,4 +5,13 @@
     android:layout_height="match_parent"
     tools:context=".StepsOverviewFragment">
 
+    <TextView
+        android:id="@+id/tv_steps_temp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
 </FrameLayout>
