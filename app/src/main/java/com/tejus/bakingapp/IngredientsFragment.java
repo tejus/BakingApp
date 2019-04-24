@@ -18,6 +18,7 @@ public class IngredientsFragment extends Fragment {
     private static final String EXTRA_RECIPE_KEY = "recipe";
 
     private Recipe mRecipe;
+    private List<Ingredient> mIngredients;
 
     public IngredientsFragment() {
         // Required empty public constructor
@@ -44,16 +45,20 @@ public class IngredientsFragment extends Fragment {
             mRecipe = bundle.getParcelable(EXTRA_RECIPE_KEY);
         } else {
             throw new ClassCastException(rootView.getContext().toString()
-                    + " must pass a Recipe object to fragment!");
+                    + " must pass a valid Recipe object to fragment!");
         }
-
-        List<Ingredient> ingredients = mRecipe.getIngredients();
+        if (mRecipe != null) {
+            mIngredients = mRecipe.getIngredients();
+        } else {
+            throw new ClassCastException(rootView.getContext().toString()
+                    + " must pass a valid Recipe object to fragment!");
+        }
 
         TextView textView = rootView.findViewById(R.id.tv_ingr_temp);
 
         textView.setText("Ingredients: \n");
 
-        for (Ingredient ingredient : ingredients) {
+        for (Ingredient ingredient : mIngredients) {
             textView.append(ingredient.getIngredient() + "\n");
         }
 

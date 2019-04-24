@@ -13,7 +13,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.tejus.bakingapp.model.Recipe;
@@ -88,7 +87,7 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
-        RelativeLayout sheetBar = findViewById(R.id.bar_bottom_sheet);
+        LinearLayout sheetBar = findViewById(R.id.bar_bottom_sheet);
         sheetBar.setOnClickListener(v -> {
             if (mSheetState == BottomSheetBehavior.STATE_EXPANDED) {
                 mSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
