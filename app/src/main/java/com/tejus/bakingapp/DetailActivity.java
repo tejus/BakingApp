@@ -16,29 +16,41 @@ import android.widget.Toast;
 
 import com.tejus.bakingapp.model.Recipe;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION_KEY = "position";
 
+    @BindView(R.id.viewpager_detail)
+    ViewPager mViewPager;
+    @BindView(R.id.viewpager_detail_sheet)
+    ViewPager mSheetViewPager;
+    @BindView(R.id.include_bottom_sheet)
+    LinearLayout mSheetLayout;
+    @BindView(R.id.tv_bottom_sheet_overview)
+    TextView mTvOverview;
+    @BindView(R.id.iv_bottom_sheet_back)
+    ImageView mIvBack;
+    @BindView(R.id.iv_bottom_sheet_forward)
+    ImageView mIvForward;
+    @BindView(R.id.tv_bottom_sheet_ingredients)
+    TextView mTvIngredients;
+    @BindView(R.id.tv_bottom_sheet_steps)
+    TextView mTvSteps;
+
     private FragmentManager mFragmentManager;
-    private ViewPager mViewPager;
-    private ViewPager mSheetViewPager;
     private DetailPagerAdapter mPagerAdapter;
     private Recipe mRecipe;
-
-    private LinearLayout mSheetLayout;
-    private TextView mTvOverview;
     private BottomSheetBehavior mSheetBehavior;
     private int mSheetState;
-    private ImageView mIvBack;
-    private ImageView mIvForward;
-    private TextView mTvIngredients;
-    private TextView mTvSteps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        ButterKnife.bind(this);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null && bundle.containsKey(EXTRA_POSITION_KEY)) {
@@ -53,15 +65,6 @@ public class DetailActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setTitle(mRecipe.getName());
         }
-
-        mViewPager = findViewById(R.id.viewpager_detail);
-        mSheetViewPager = findViewById(R.id.viewpager_detail_sheet);
-        mSheetLayout = findViewById(R.id.include_bottom_sheet);
-        mTvOverview = findViewById(R.id.tv_bottom_sheet_overview);
-        mIvBack = findViewById(R.id.iv_bottom_sheet_back);
-        mIvForward = findViewById(R.id.iv_bottom_sheet_forward);
-        mTvIngredients = findViewById(R.id.tv_bottom_sheet_ingredients);
-        mTvSteps = findViewById(R.id.tv_bottom_sheet_steps);
 
         mFragmentManager = getSupportFragmentManager();
         mPagerAdapter = new DetailPagerAdapter(mFragmentManager, mRecipe);

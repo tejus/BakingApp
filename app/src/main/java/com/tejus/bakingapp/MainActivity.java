@@ -9,19 +9,22 @@ import com.tejus.bakingapp.model.Recipe;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity {
 
-    private ListView mListView;
-    private MainAdapter mAdapter;
+    @BindView(R.id.lv_main)
+    ListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         List<Recipe> recipes = Repository.getRecipes(this);
-        mListView = findViewById(R.id.lv_main);
-        mAdapter = new MainAdapter(this, recipes);
+        MainAdapter mAdapter = new MainAdapter(this, recipes);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener((parent, view, position, id) -> {
             Intent intent = new Intent(this, DetailActivity.class);
