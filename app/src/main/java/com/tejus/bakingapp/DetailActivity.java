@@ -84,82 +84,97 @@ public class DetailActivity extends AppCompatActivity {
                 .add(R.id.frame_steps, mStepsFragment)
                 .commit();
 
+        setupBottomSheetBehavior();
+    }
+
+    private void setupBottomSheetBehavior() {
         mSheetBehavior = BottomSheetBehavior.from(mSheetLayout);
         mSheetState = mSheetBehavior.getState();
         mTvIngredients.post(() -> mTvIngredients.setTranslationY(mTvIngredients.getHeight()));
         mTvSteps.post(() -> mTvSteps.setTranslationY(mTvSteps.getHeight()));
-        mSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View view, int i) {
-                mSheetState = i;
-                if (mSheetState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    mBgView.setVisibility(View.GONE);
-                    mIvBack.animate().translationX(0);
-                    mIvForward.animate().translationX(0);
-                    mTvOverview.animate().translationY(0);
-                    mTvIngredients.setClickable(false);
-                    mTvIngredients.setFocusable(false);
-                    mTvIngredients.animate().translationY(mTvIngredients.getHeight());
-                    mTvSteps.setClickable(false);
-                    mTvSteps.setFocusable(false);
-                    mTvSteps.animate().translationY(mTvSteps.getHeight());
-                } else if (mSheetState == BottomSheetBehavior.STATE_EXPANDED) {
-                    mIvBack.animate().translationX(-mIvBack.getWidth());
-                    mIvForward.animate().translationX(mIvForward.getWidth());
-                    mTvOverview.animate().translationY(-mTvOverview.getHeight());
-                    mTvIngredients.setClickable(true);
-                    mTvIngredients.setFocusable(true);
-                    mTvIngredients.animate().translationY(0);
-                    mTvSteps.setClickable(true);
-                    mTvSteps.setFocusable(true);
-                    mTvSteps.animate().translationY(0);
-                }
-            }
+        mSheetBehavior.setBottomSheetCallback(mSheetCallback);
+    }
 
-            @Override
-            public void onSlide(@NonNull View view, float v) {
+    private BottomSheetBehavior.BottomSheetCallback mSheetCallback = new BottomSheetBehavior.BottomSheetCallback() {
+        @Override
+        public void onStateChanged(@NonNull View view, int i) {
+            mSheetState = i;
+            if (mSheetState == BottomSheetBehavior.STATE_COLLAPSED) {
+                sheetCollapseAnimation();
+            } else if (mSheetState == BottomSheetBehavior.STATE_EXPANDED) {
+                sheetExpandAnimation();
+            } else {
                 mBgView.setVisibility(View.VISIBLE);
-                mBgView.setAlpha(v);
             }
-        });
+        }
 
-        mTvOverview.setOnClickListener(v -> {
-            if (mSheetState == BottomSheetBehavior.STATE_EXPANDED) {
-                mSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            } else if (mSheetState == BottomSheetBehavior.STATE_COLLAPSED) {
-                mSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            }
-        });
+        @Override
+        public void onSlide(@NonNull View view, float v) {
+            mBgView.setAlpha(v);
+        }
+    };
 
-        mIvForward.setOnClickListener(v -> {
-            if (mViewPager.getCurrentItem() < mPagerAdapter.getCount() - 1
-                    && mSheetState == BottomSheetBehavior.STATE_COLLAPSED)
-                mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
-        });
+    public void onClickBack(View v) {
+        if (mViewPager.getCurrentItem() > 0
+                && mSheetState == BottomSheetBehavior.STATE_COLLAPSED)
+            mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
+    }
 
-        mIvBack.setOnClickListener(v -> {
-            if (mViewPager.getCurrentItem() > 0
-                    && mSheetState == BottomSheetBehavior.STATE_COLLAPSED)
-                mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
-        });
+    public void onClickOverview(View v) {
+        if (mSheetState == BottomSheetBehavior.STATE_EXPANDED) {
+            mSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else if (mSheetState == BottomSheetBehavior.STATE_COLLAPSED) {
+            mSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
+    }
 
-        mTvIngredients.setOnClickListener(v -> {
-            if (mSheetState == BottomSheetBehavior.STATE_EXPANDED) {
-                mSheetSteps.setVisibility(View.INVISIBLE);
-                mSheetIngredients.setVisibility(View.VISIBLE);
-                mTvIngredients.setTextColor(getColor(R.color.colorButtonActive));
-                mTvSteps.setTextColor(getColor(android.R.color.black));
-            }
-        });
+    public void onClickForward(View v) {
+        if (mViewPager.getCurrentItem() < mPagerAdapter.getCount() - 1
+                && mSheetState == BottomSheetBehavior.STATE_COLLAPSED)
+            mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
+    }
 
-        mTvSteps.setOnClickListener(v -> {
-            if (mSheetState == BottomSheetBehavior.STATE_EXPANDED) {
-                mSheetIngredients.setVisibility(View.INVISIBLE);
-                mSheetSteps.setVisibility(View.VISIBLE);
-                mTvIngredients.setTextColor(getColor(android.R.color.black));
-                mTvSteps.setTextColor(getColor(R.color.colorButtonActive));
-            }
-        });
+    public void onClickIngredients(View v) {
+        if (mSheetState == BottomSheetBehavior.STATE_EXPANDED) {
+            mSheetSteps.setVisibility(View.INVISIBLE);
+            mSheetIngredients.setVisibility(View.VISIBLE);
+            mTvIngredients.setTextColor(getColor(R.color.colorButtonActive));
+            mTvSteps.setTextColor(getColor(android.R.color.black));
+        }
+    }
+
+    public void onClickSteps(View v) {
+        if (mSheetState == BottomSheetBehavior.STATE_EXPANDED) {
+            mSheetIngredients.setVisibility(View.INVISIBLE);
+            mSheetSteps.setVisibility(View.VISIBLE);
+            mTvIngredients.setTextColor(getColor(android.R.color.black));
+            mTvSteps.setTextColor(getColor(R.color.colorButtonActive));
+        }
+    }
+
+    private void sheetCollapseAnimation() {
+        mBgView.setVisibility(View.GONE);
+        mIvBack.animate().translationX(0);
+        mIvForward.animate().translationX(0);
+        mTvOverview.animate().translationY(0);
+        mTvIngredients.setClickable(false);
+        mTvIngredients.setFocusable(false);
+        mTvIngredients.animate().translationY(mTvIngredients.getHeight());
+        mTvSteps.setClickable(false);
+        mTvSteps.setFocusable(false);
+        mTvSteps.animate().translationY(mTvSteps.getHeight());
+    }
+
+    private void sheetExpandAnimation() {
+        mIvBack.animate().translationX(-mIvBack.getWidth());
+        mIvForward.animate().translationX(mIvForward.getWidth());
+        mTvOverview.animate().translationY(-mTvOverview.getHeight());
+        mTvIngredients.setClickable(true);
+        mTvIngredients.setFocusable(true);
+        mTvIngredients.animate().translationY(0);
+        mTvSteps.setClickable(true);
+        mTvSteps.setFocusable(true);
+        mTvSteps.animate().translationY(0);
     }
 
     @Override

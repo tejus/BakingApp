@@ -24,6 +24,7 @@
                 android:layout_height="56dp"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:onClick="onClickIngredients"
                 android:text="Ingredients"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
                 android:textColor="@color/colorButtonActive"
@@ -35,6 +36,7 @@
                 android:layout_height="56dp"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:onClick="onClickSteps"
                 android:text="Steps"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
                 android:textSize="16sp" />
@@ -52,6 +54,7 @@
                 android:layout_weight="0"
                 android:clickable="true"
                 android:focusable="true"
+                android:onClick="onClickBack"
                 android:scaleType="center"
                 android:src="@drawable/outline_chevron_left_black_24" />
 
@@ -63,6 +66,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
+                android:onClick="onClickOverview"
                 android:text="@string/detail_overview"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
                 android:textSize="16sp" />
@@ -74,6 +78,7 @@
                 android:layout_weight="0"
                 android:clickable="true"
                 android:focusable="true"
+                android:onClick="onClickForward"
                 android:scaleType="center"
                 android:src="@drawable/outline_chevron_right_black_24" />
         </LinearLayout>
