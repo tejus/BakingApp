@@ -123,10 +123,9 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public void onClickOverview(View v) {
-        if (mSheetState == BottomSheetBehavior.STATE_EXPANDED) {
-            mSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        } else if (mSheetState == BottomSheetBehavior.STATE_COLLAPSED) {
+        if (mSheetState == BottomSheetBehavior.STATE_COLLAPSED) {
             mSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            sheetExpandAnimation();
         }
     }
 
@@ -176,6 +175,7 @@ public class DetailActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (mSheetState == BottomSheetBehavior.STATE_EXPANDED) {
             mSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            sheetCollapseAnimation();
             return;
         }
         super.onBackPressed();
@@ -186,6 +186,7 @@ public class DetailActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
             if (mSheetState != BottomSheetBehavior.STATE_COLLAPSED) {
                 mSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                sheetCollapseAnimation();
                 return true;
             }
         }
