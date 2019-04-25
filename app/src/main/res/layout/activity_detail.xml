@@ -12,14 +12,14 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="56dp" />
 
-    <View
-        android:id="@+id/background_dim_detail"
+    <!-- The BottomSheet include needs to be wrapped in a
+    CoordinatorLayout to prevent it from expanding under the App Bar-->
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#99000000"
-        android:visibility="gone" />
+        android:layout_height="wrap_content">
 
-    <include
-        android:id="@+id/include_bottom_sheet"
-        layout="@layout/bottom_sheet_detail" />
+        <include
+            android:id="@+id/include_bottom_sheet"
+            layout="@layout/bottom_sheet_detail" />
+    </android.support.design.widget.CoordinatorLayout>
 </android.support.design.widget.CoordinatorLayout>

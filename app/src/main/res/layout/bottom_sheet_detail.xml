@@ -84,21 +84,9 @@
         </LinearLayout>
     </FrameLayout>
 
-    <FrameLayout
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager_detail_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/background_light">
-
-        <FrameLayout
-            android:id="@+id/frame_ingr"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <FrameLayout
-            android:id="@+id/frame_steps"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="invisible" />
-
-    </FrameLayout>
+        android:background="@android:color/background_light" />
 </LinearLayout>
