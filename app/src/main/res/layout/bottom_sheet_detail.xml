@@ -7,48 +7,15 @@
     app:behavior_peekHeight="56dp"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
-    <RelativeLayout
-        android:id="@+id/bar_bottom_sheet"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/colorAccent"
         android:elevation="4dp">
 
-        <ImageView
-            android:id="@+id/iv_bottom_sheet_back"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_alignParentStart="true"
-            android:clickable="true"
-            android:focusable="true"
-            android:scaleType="center"
-            android:src="@drawable/outline_chevron_left_black_24" />
-
-        <TextView
-            android:id="@+id/tv_bottom_sheet_bar_overview"
-            android:layout_width="fill_parent"
-            android:layout_height="56dp"
-            android:layout_centerHorizontal="true"
-            android:gravity="center"
-            android:text="@string/detail_overview"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
-            android:textSize="16sp" />
-
-        <ImageView
-            android:id="@+id/iv_bottom_sheet_forward"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_alignParentEnd="true"
-            android:clickable="true"
-            android:focusable="true"
-            android:scaleType="center"
-            android:src="@drawable/outline_chevron_right_black_24" />
-
         <LinearLayout
-            android:id="@+id/bar_bottom_sheet_tabs"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_marginTop="56dp"
             android:orientation="horizontal">
 
             <TextView
@@ -56,8 +23,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_weight="1"
-                android:clickable="true"
-                android:focusable="true"
                 android:gravity="center"
                 android:text="Ingredients"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
@@ -69,14 +34,50 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_weight="1"
-                android:clickable="true"
-                android:focusable="true"
                 android:gravity="center"
                 android:text="Steps"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
                 android:textSize="16sp" />
         </LinearLayout>
-    </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_bottom_sheet_back"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_weight="0"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="center"
+                android:src="@drawable/outline_chevron_left_black_24" />
+
+            <TextView
+                android:id="@+id/tv_bottom_sheet_overview"
+                android:layout_width="fill_parent"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/detail_overview"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/iv_bottom_sheet_forward"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_weight="0"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="center"
+                android:src="@drawable/outline_chevron_right_black_24" />
+        </LinearLayout>
+    </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
