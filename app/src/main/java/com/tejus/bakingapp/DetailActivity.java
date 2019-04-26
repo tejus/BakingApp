@@ -173,7 +173,7 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mSheetState == BottomSheetBehavior.STATE_EXPANDED) {
+        if (mSheetState != BottomSheetBehavior.STATE_COLLAPSED) {
             mSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             sheetCollapseAnimation();
             return;
