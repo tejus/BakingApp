@@ -107,11 +107,11 @@ public class DetailActivity extends AppCompatActivity {
                 @Override
                 public void onPageSelected(int position) {
                     if (position == 0) {
-                        mTvIngredients.setTextColor(getColor(R.color.colorButtonActive));
-                        mTvSteps.setTextColor(getColor(android.R.color.black));
+                        mTvIngredients.setTextColor(getColor(R.color.colorAccent));
+                        mTvSteps.setTextColor(getColor(android.R.color.white));
                     } else if (position == 1) {
-                        mTvIngredients.setTextColor(getColor(android.R.color.black));
-                        mTvSteps.setTextColor(getColor(R.color.colorButtonActive));
+                        mTvIngredients.setTextColor(getColor(android.R.color.white));
+                        mTvSteps.setTextColor(getColor(R.color.colorAccent));
                     }
                 }
             };
