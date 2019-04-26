@@ -23,17 +23,17 @@ public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION_KEY = "position";
 
-    @BindView(R.id.viewpager_detail)
+    @BindView(R.id.viewpager_steps)
     ViewPager mViewPager;
-    @BindView(R.id.viewpager_detail_sheet)
+    @BindView(R.id.viewpager_overview)
     ViewPager mSheetViewPager;
     @BindView(R.id.include_bottom_sheet)
     LinearLayout mSheetLayout;
-    @BindView(R.id.tv_bottom_sheet_overview)
+    @BindView(R.id.tv_overview)
     TextView mTvOverview;
-    @BindView(R.id.iv_bottom_sheet_back)
+    @BindView(R.id.iv_overview_back)
     ImageView mIvBack;
-    @BindView(R.id.iv_bottom_sheet_forward)
+    @BindView(R.id.iv_overview_forward)
     ImageView mIvForward;
     @BindView(R.id.tv_bottom_sheet_ingredients)
     TextView mTvIngredients;
