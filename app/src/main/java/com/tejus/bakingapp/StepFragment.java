@@ -44,9 +44,6 @@ public class StepFragment extends Fragment {
                     + " must pass a Step object to fragment!");
         }
 
-        ((TextView) rootView.findViewById(R.id.tv_step_number))
-                .setText(getString(R.string.detail_step_number, mStep.getId() + 1));
-
         ((TextView) rootView.findViewById(R.id.tv_step_heading))
                 .setText(mStep.getShortDescription());
 

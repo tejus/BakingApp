@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,6 +24,8 @@ public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION_KEY = "position";
 
+    @BindView(R.id.detail_toolbar)
+    Toolbar mToolbar;
     @BindView(R.id.viewpager_steps)
     ViewPager mViewPager;
     @BindView(R.id.viewpager_overview)
@@ -40,6 +43,7 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.tv_bottom_sheet_steps)
     TextView mTvSteps;
 
+    private ActionBar mActionBar;
     private FragmentManager mFragmentManager;
     private DetailPagerAdapter mPagerAdapter;
     private Recipe mRecipe;
@@ -61,9 +65,12 @@ public class DetailActivity extends AppCompatActivity {
             finish();
         }
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(mRecipe.getName());
+        setSupportActionBar(mToolbar);
+        mActionBar = getSupportActionBar();
+        if (mActionBar != null) {
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+            mActionBar.setTitle(mRecipe.getName());
+            mViewPager.addOnPageChangeListener(mStepChangeCallback);
         }
 
         mFragmentManager = getSupportFragmentManager();
@@ -108,11 +115,19 @@ public class DetailActivity extends AppCompatActivity {
                 public void onPageSelected(int position) {
                     if (position == 0) {
                         mTvIngredients.setTextColor(getColor(R.color.colorAccent));
-                        mTvSteps.setTextColor(getColor(android.R.color.white));
+                        mTvSteps.setTextColor(getColor(R.color.colorGrey));
                     } else if (position == 1) {
-                        mTvIngredients.setTextColor(getColor(android.R.color.white));
+                        mTvIngredients.setTextColor(getColor(R.color.colorGrey));
                         mTvSteps.setTextColor(getColor(R.color.colorAccent));
                     }
+                }
+            };
+
+    private ViewPager.SimpleOnPageChangeListener mStepChangeCallback =
+            new ViewPager.SimpleOnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                    mActionBar.setSubtitle("Step " + (position + 1));
                 }
             };
 

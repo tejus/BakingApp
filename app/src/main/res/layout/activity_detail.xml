@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,17 +8,31 @@
     android:fitsSystemWindows="true"
     tools:context=".DetailActivity">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager_steps"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="56dp" />
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/detail_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimaryDark"
+            app:subtitleTextColor="@color/colorGrey"
+            app:titleTextColor="@color/colorGrey" />
+    </android.support.design.widget.AppBarLayout>
 
     <!-- The BottomSheet include needs to be wrapped in a
     CoordinatorLayout to prevent it from expanding under the App Bar-->
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager_steps"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="56dp" />
 
         <include
             android:id="@+id/include_bottom_sheet"

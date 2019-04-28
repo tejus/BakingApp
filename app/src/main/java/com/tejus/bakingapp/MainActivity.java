@@ -3,6 +3,7 @@ package com.tejus.bakingapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.widget.ListView;
 
 import com.tejus.bakingapp.model.Recipe;
@@ -14,6 +15,8 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
+    @BindView(R.id.main_toolbar)
+    Toolbar mToolbar;
     @BindView(R.id.lv_main)
     ListView mListView;
 
@@ -22,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        setSupportActionBar(mToolbar);
 
         List<Recipe> recipes = Repository.getRecipes(this);
         MainAdapter mAdapter = new MainAdapter(this, recipes);
