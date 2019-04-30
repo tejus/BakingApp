@@ -1,24 +1,33 @@
 package com.tejus.bakingapp;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.tejus.bakingapp.model.Ingredient;
 import com.tejus.bakingapp.model.Recipe;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 public class IngredientsFragment extends Fragment {
 
     private static final String EXTRA_RECIPE_KEY = "recipe";
 
-    private Recipe mRecipe;
-    private List<Ingredient> mIngredients;
+    private Context mContext;
+
+    private Unbinder mUnbinder;
+    @BindView(R.id.rv_ingredients)
+    RecyclerView mRecyclerView;
 
     public IngredientsFragment() {
         // Required empty public constructor
@@ -35,34 +44,45 @@ public class IngredientsFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.fragment_ingredients, container, false);
+        mUnbinder = ButterKnife.bind(this, rootView);
 
         Bundle bundle = getArguments();
+        Recipe recipe;
+        List<Ingredient> ingredients;
         if (bundle != null && bundle.containsKey(EXTRA_RECIPE_KEY)) {
-            mRecipe = bundle.getParcelable(EXTRA_RECIPE_KEY);
+            recipe = bundle.getParcelable(EXTRA_RECIPE_KEY);
         } else {
-            throw new ClassCastException(rootView.getContext().toString()
+            throw new ClassCastException(mContext.toString()
                     + " must pass a valid Recipe object to fragment!");
         }
-        if (mRecipe != null) {
-            mIngredients = mRecipe.getIngredients();
+        if (recipe != null) {
+            ingredients = recipe.getIngredients();
         } else {
-            throw new ClassCastException(rootView.getContext().toString()
+            throw new ClassCastException(mContext.toString()
                     + " must pass a valid Recipe object to fragment!");
         }
 
-        TextView textView = rootView.findViewById(R.id.tv_ingr_temp);
-
-        textView.setText("Ingredients: \n");
-
-        for (Ingredient ingredient : mIngredients) {
-            textView.append(ingredient.getIngredient() + "\n");
-        }
-
+        IngredientsAdapter adapter = new IngredientsAdapter();
+        adapter.setIngredients(ingredients);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        mRecyclerView.setAdapter(adapter);
         // Inflate the layout for this fragment
         return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mUnbinder.unbind();
     }
 }

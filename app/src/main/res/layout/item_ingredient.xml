@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:gravity="bottom"
+    android:shrinkColumns="0,2,3"
+    android:stretchColumns="1">
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        tools:ignore="UselessParent">
+
+        <TextView
+            android:id="@+id/item_name"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="bottom"
+            android:maxWidth="200dp"
+            android:maxLines="3"
+            android:textColor="@color/colorGrey"
+            tools:text="unsalted butter, softened and cut into 1 in. cubes" />
+
+        <ImageView
+            android:id="@+id/line_dotted"
+            android:layout_width="50dp"
+            android:layout_height="2dp"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="20dp"
+            android:minWidth="50dp"
+            android:src="@drawable/line_dotted" />
+
+        <TextView
+            android:id="@+id/item_quantity"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="bottom"
+            android:textColor="@color/colorGrey"
+            tools:text="2" />
+
+        <TextView
+            android:id="@+id/item_units"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="bottom"
+            android:textColor="@color/colorGrey"
+            tools:text="Cups" />
+    </TableRow>
+</TableLayout>
