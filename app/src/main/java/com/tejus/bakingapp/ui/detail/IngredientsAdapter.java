@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.tejus.bakingapp.R;
 import com.tejus.bakingapp.model.Ingredient;
+import com.tejus.bakingapp.ui.WrapWidthTextView;
 
 import java.util.List;
 import java.util.Locale;
@@ -42,8 +43,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     public void onBindViewHolder(@NonNull IngredientsViewHolder holder, int i) {
         holder.mItemName.setText(mIngredients.get(i).getIngredient());
         String quantity = String.format(Locale.getDefault(), "%1$,.0f", mIngredients.get(i).getQuantity());
+        quantity = quantity.concat(" " + mIngredients.get(i).getMeasure().toLowerCase());
         holder.mItemQuantity.setText(quantity);
-        holder.mItemUnits.setText(mIngredients.get(i).getMeasure());
     }
 
     @Override
@@ -59,11 +60,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     class IngredientsViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.item_ingredient_name)
-        TextView mItemName;
+        WrapWidthTextView mItemName;
         @BindView(R.id.item_ingredient_quantity)
         TextView mItemQuantity;
-        @BindView(R.id.item_ingredient_units)
-        TextView mItemUnits;
 
         IngredientsViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="48dp"
     android:gravity="bottom"
-    android:shrinkColumns="0,2,3"
+    android:shrinkColumns="0,2"
     android:stretchColumns="1">
 
     <TableRow
@@ -12,13 +12,14 @@
         android:layout_height="48dp"
         tools:ignore="UselessParent">
 
-        <TextView
+        <com.tejus.bakingapp.ui.WrapWidthTextView
             android:id="@+id/item_ingredient_name"
             android:layout_marginStart="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:gravity="bottom"
             android:maxWidth="200dp"
-            android:maxLines="3"
+            android:maxLines="2"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             android:textColor="@color/colorGrey"
             tools:text="unsalted butter, softened and cut into 1 in. cubes" />
 
@@ -29,7 +30,7 @@
             android:layout_gravity="bottom"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             android:minWidth="50dp"
             android:src="@drawable/line_dotted"
             tools:ignore="ContentDescription" />
@@ -37,19 +38,11 @@
         <TextView
             android:id="@+id/item_ingredient_quantity"
             android:layout_height="match_parent"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="16dp"
-            android:gravity="bottom"
-            android:textColor="@color/colorGrey"
-            tools:text="2" />
-
-        <TextView
-            android:id="@+id/item_ingredient_units"
-            android:layout_height="match_parent"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:gravity="bottom"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             android:textColor="@color/colorGrey"
-            tools:text="Cups" />
+            tools:text="2 cups" />
     </TableRow>
 </TableLayout>
