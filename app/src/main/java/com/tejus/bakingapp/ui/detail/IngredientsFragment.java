@@ -73,7 +73,7 @@ public class IngredientsFragment extends Fragment {
                     + " must pass a valid Recipe object to fragment!");
         }
 
-        IngredientsAdapter adapter = new IngredientsAdapter();
+        IngredientsAdapter adapter = new IngredientsAdapter(mContext);
         adapter.setIngredients(ingredients);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.setAdapter(adapter);

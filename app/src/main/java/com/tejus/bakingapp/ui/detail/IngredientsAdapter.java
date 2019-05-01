@@ -1,7 +1,9 @@
 package com.tejus.bakingapp.ui.detail;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,12 @@ import java.util.Locale;
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.IngredientsViewHolder> {
 
     private List<Ingredient> mIngredients;
+    private int mMaxWidth;
+
+    IngredientsAdapter(Context context) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        mMaxWidth = metrics.widthPixels * 2 / 3;
+    }
 
     @NonNull
     @Override
@@ -23,6 +31,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_ingredient, viewGroup, false);
         IngredientsViewHolder holder = new IngredientsViewHolder(view);
+        holder.mItemName.setMaxWidth(mMaxWidth);
         return holder;
     }
 
@@ -40,7 +49,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         return mIngredients.size();
     }
 
-    public void setIngredients(List<Ingredient> ingredients) {
+    void setIngredients(List<Ingredient> ingredients) {
         this.mIngredients = ingredients;
         notifyDataSetChanged();
     }
@@ -50,7 +59,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         TextView mItemQuantity;
         TextView mItemUnits;
 
-        public IngredientsViewHolder(@NonNull View itemView) {
+        IngredientsViewHolder(@NonNull View itemView) {
             super(itemView);
             mItemName = itemView.findViewById(R.id.item_name);
             mItemQuantity = itemView.findViewById(R.id.item_quantity);
