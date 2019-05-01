@@ -11,7 +11,6 @@ import com.tejus.bakingapp.R;
 import com.tejus.bakingapp.model.Step;
 
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,8 +34,9 @@ public class StepsOverviewAdapter extends RecyclerView.Adapter<StepsOverviewAdap
 
     @Override
     public void onBindViewHolder(@NonNull StepsOverviewViewHolder holder, int i) {
-        String number = String.format(Locale.getDefault(), "%02d", (mSteps.get(i).getId() + 1));
-        holder.mItemNumber.setText(number + ".");
+        String number = holder.itemView.getResources()
+                .getString(R.string.detail_step_overview_number, (mSteps.get(i).getId() + 1));
+        holder.mItemNumber.setText(number);
         holder.mItemName.setText(mSteps.get(i).getShortDescription());
         holder.itemView.setOnClickListener(v -> mClickListener.onStepClick(i));
     }
@@ -47,7 +47,7 @@ public class StepsOverviewAdapter extends RecyclerView.Adapter<StepsOverviewAdap
         return mSteps.size();
     }
 
-    public void setSteps(List<Step> steps) {
+    void setSteps(List<Step> steps) {
         this.mSteps = steps;
         notifyDataSetChanged();
     }
@@ -67,5 +67,4 @@ public class StepsOverviewAdapter extends RecyclerView.Adapter<StepsOverviewAdap
     public interface OnStepAdapterClickListener {
         void onStepClick(int position);
     }
-
 }

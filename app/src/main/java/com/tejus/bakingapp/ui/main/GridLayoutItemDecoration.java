@@ -10,7 +10,7 @@ public class GridLayoutItemDecoration extends RecyclerView.ItemDecoration {
     private int spacing;
     private int numColumns;
 
-    public GridLayoutItemDecoration(int spacing, int numColumns) {
+    GridLayoutItemDecoration(int spacing, int numColumns) {
         this.spacing = spacing;
         this.numColumns = numColumns;
     }

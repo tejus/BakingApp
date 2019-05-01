@@ -25,7 +25,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         mClickListener = clickListener;
     }
 
-    public void setRecipes(List<Recipe> recipes) {
+    void setRecipes(List<Recipe> recipes) {
         mRecipes = recipes;
     }
 

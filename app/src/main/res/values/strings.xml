@@ -3,4 +3,9 @@
     <string name="main_serves">Serves %1$d</string>
     <string name="detail_step_number">Step %1$d</string>
     <string name="detail_overview">Overview</string>
+    <string name="detail_ingredients">Ingredients</string>
+    <string name="detail_steps">Steps</string>
+    <string name="detail_desc_back">Previous step</string>
+    <string name="detail_desc_forward">Next step</string>
+    <string name="detail_step_overview_number">%1$d.</string>
 </resources>
