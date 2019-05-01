@@ -13,7 +13,7 @@
         tools:ignore="UselessParent">
 
         <TextView
-            android:id="@+id/item_name"
+            android:id="@+id/item_ingredient_name"
             android:layout_marginStart="16dp"
             android:layout_marginBottom="16dp"
             android:gravity="bottom"
@@ -34,7 +34,7 @@
             android:src="@drawable/line_dotted" />
 
         <TextView
-            android:id="@+id/item_quantity"
+            android:id="@+id/item_ingredient_quantity"
             android:layout_height="match_parent"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="16dp"
@@ -43,7 +43,7 @@
             tools:text="2" />
 
         <TextView
-            android:id="@+id/item_units"
+            android:id="@+id/item_ingredient_units"
             android:layout_height="match_parent"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
