@@ -1,4 +1,4 @@
-package com.tejus.bakingapp;
+package com.tejus.bakingapp.ui.detail;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

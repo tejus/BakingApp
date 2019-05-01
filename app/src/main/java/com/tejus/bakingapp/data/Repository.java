@@ -1,4 +1,4 @@
-package com.tejus.bakingapp;
+package com.tejus.bakingapp.data;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-class Repository {
+public class Repository {
 
-    static ArrayList<Recipe> getRecipes(Context context) {
+    public static ArrayList<Recipe> getRecipes(Context context) {
         AssetManager assetManager = context.getAssets();
         String json;
         Gson gson = new Gson();
@@ -35,7 +35,7 @@ class Repository {
         return new ArrayList<>(Arrays.asList(recipes));
     }
 
-    static Recipe getRecipe(Context context, int position) {
+    public static Recipe getRecipe(Context context, int position) {
         List<Recipe> recipes = getRecipes(context);
         if (recipes != null && recipes.size() > position) {
             return recipes.get(position);

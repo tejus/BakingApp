@@ -1,4 +1,4 @@
-package com.tejus.bakingapp;
+package com.tejus.bakingapp.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,7 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.ListView;
 
+import com.tejus.bakingapp.R;
+import com.tejus.bakingapp.data.Repository;
 import com.tejus.bakingapp.model.Recipe;
+import com.tejus.bakingapp.ui.detail.DetailActivity;
 
 import java.util.List;
 

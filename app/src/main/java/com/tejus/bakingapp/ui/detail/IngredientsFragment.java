@@ -1,4 +1,4 @@
-package com.tejus.bakingapp;
+package com.tejus.bakingapp.ui.detail;
 
 
 import android.content.Context;
@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tejus.bakingapp.R;
 import com.tejus.bakingapp.model.Ingredient;
 import com.tejus.bakingapp.model.Recipe;
 

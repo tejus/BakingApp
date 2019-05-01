@@ -1,4 +1,4 @@
-package com.tejus.bakingapp;
+package com.tejus.bakingapp.ui.detail;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tejus.bakingapp.R;
+import com.tejus.bakingapp.data.Repository;
 import com.tejus.bakingapp.model.Recipe;
 
 import butterknife.BindView;
