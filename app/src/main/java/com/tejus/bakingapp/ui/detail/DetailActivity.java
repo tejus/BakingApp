@@ -2,7 +2,6 @@ package com.tejus.bakingapp.ui.detail;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -19,6 +18,8 @@ import com.tejus.bakingapp.R;
 import com.tejus.bakingapp.data.Repository;
 import com.tejus.bakingapp.model.Recipe;
 
+import biz.laenger.android.vpbs.BottomSheetUtils;
+import biz.laenger.android.vpbs.ViewPagerBottomSheetBehavior;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -49,7 +50,7 @@ public class DetailActivity extends AppCompatActivity {
     private FragmentManager mFragmentManager;
     private DetailPagerAdapter mPagerAdapter;
     private Recipe mRecipe;
-    private BottomSheetBehavior mSheetBehavior;
+    private ViewPagerBottomSheetBehavior mSheetBehavior;
     private int mSheetState;
 
     @Override
@@ -86,22 +87,23 @@ public class DetailActivity extends AppCompatActivity {
                 new DetailSheetPagerAdapter(mFragmentManager, mRecipe);
         mSheetViewPager.setAdapter(sheetPagerAdapter);
         mSheetViewPager.addOnPageChangeListener(mSheetChangeCallback);
+        BottomSheetUtils.setupViewPager(mSheetViewPager);
 
-        mSheetBehavior = BottomSheetBehavior.from(mSheetLayout);
+        mSheetBehavior = ViewPagerBottomSheetBehavior.from(mSheetLayout);
         mSheetState = mSheetBehavior.getState();
         mTvIngredients.post(() -> mTvIngredients.setTranslationY(mTvIngredients.getHeight()));
         mTvSteps.post(() -> mTvSteps.setTranslationY(mTvSteps.getHeight()));
         mSheetBehavior.setBottomSheetCallback(mSheetCallback);
     }
 
-    private BottomSheetBehavior.BottomSheetCallback mSheetCallback =
-            new BottomSheetBehavior.BottomSheetCallback() {
+    private ViewPagerBottomSheetBehavior.BottomSheetCallback mSheetCallback =
+            new ViewPagerBottomSheetBehavior.BottomSheetCallback() {
                 @Override
                 public void onStateChanged(@NonNull View view, int i) {
                     mSheetState = i;
-                    if (mSheetState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    if (mSheetState == ViewPagerBottomSheetBehavior.STATE_COLLAPSED) {
                         sheetCollapseAnimation();
-                    } else if (mSheetState == BottomSheetBehavior.STATE_EXPANDED) {
+                    } else if (mSheetState == ViewPagerBottomSheetBehavior.STATE_EXPANDED) {
                         sheetExpandAnimation();
                     }
                 }
@@ -135,31 +137,31 @@ public class DetailActivity extends AppCompatActivity {
 
     public void onClickBack(View v) {
         if (mViewPager.getCurrentItem() > 0
-                && mSheetState == BottomSheetBehavior.STATE_COLLAPSED)
+                && mSheetState == ViewPagerBottomSheetBehavior.STATE_COLLAPSED)
             mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
     }
 
     public void onClickOverview(View v) {
-        if (mSheetState == BottomSheetBehavior.STATE_COLLAPSED) {
-            mSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        if (mSheetState == ViewPagerBottomSheetBehavior.STATE_COLLAPSED) {
+            mSheetBehavior.setState(ViewPagerBottomSheetBehavior.STATE_EXPANDED);
             sheetExpandAnimation();
         }
     }
 
     public void onClickForward(View v) {
         if (mViewPager.getCurrentItem() < mPagerAdapter.getCount() - 1
-                && mSheetState == BottomSheetBehavior.STATE_COLLAPSED)
+                && mSheetState == ViewPagerBottomSheetBehavior.STATE_COLLAPSED)
             mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
     }
 
     public void onClickIngredients(View v) {
-        if (mSheetState == BottomSheetBehavior.STATE_EXPANDED) {
+        if (mSheetState == ViewPagerBottomSheetBehavior.STATE_EXPANDED) {
             mSheetViewPager.setCurrentItem(0);
         }
     }
 
     public void onClickSteps(View v) {
-        if (mSheetState == BottomSheetBehavior.STATE_EXPANDED) {
+        if (mSheetState == ViewPagerBottomSheetBehavior.STATE_EXPANDED) {
             mSheetViewPager.setCurrentItem(1);
         }
     }
@@ -190,8 +192,8 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mSheetState != BottomSheetBehavior.STATE_COLLAPSED) {
-            mSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        if (mSheetState != ViewPagerBottomSheetBehavior.STATE_COLLAPSED) {
+            mSheetBehavior.setState(ViewPagerBottomSheetBehavior.STATE_COLLAPSED);
             sheetCollapseAnimation();
             return;
         }
@@ -201,8 +203,8 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            if (mSheetState != BottomSheetBehavior.STATE_COLLAPSED) {
-                mSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            if (mSheetState != ViewPagerBottomSheetBehavior.STATE_COLLAPSED) {
+                mSheetBehavior.setState(ViewPagerBottomSheetBehavior.STATE_COLLAPSED);
                 sheetCollapseAnimation();
                 return true;
             }
