@@ -2,14 +2,14 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="48dp"
     android:gravity="bottom"
     android:shrinkColumns="0,2,3"
     android:stretchColumns="1">
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="48dp"
         tools:ignore="UselessParent">
 
         <TextView
