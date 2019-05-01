@@ -29,6 +29,7 @@ public class StepsOverviewFragment extends Fragment {
     private Unbinder mUnbinder;
     @BindView(R.id.rv_steps)
     RecyclerView mRecyclerView;
+    StepsOverviewAdapter.OnStepAdapterClickListener mClickListener;
 
     public StepsOverviewFragment() {
         // Required empty public constructor
@@ -47,6 +48,12 @@ public class StepsOverviewFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        try {
+            mClickListener = (StepsOverviewAdapter.OnStepAdapterClickListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement StepsOverviewAdapter.OnStepAdapterClickListener!");
+        }
         mContext = context;
     }
 
@@ -73,7 +80,7 @@ public class StepsOverviewFragment extends Fragment {
                     + " must pass a valid Recipe object to fragment!");
         }
 
-        StepsOverviewAdapter adapter = new StepsOverviewAdapter();
+        StepsOverviewAdapter adapter = new StepsOverviewAdapter(mClickListener);
         adapter.setSteps(steps);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.setAdapter(adapter);

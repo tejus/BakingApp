@@ -16,6 +16,11 @@ import java.util.Locale;
 public class StepsOverviewAdapter extends RecyclerView.Adapter<StepsOverviewAdapter.StepsOverviewViewHolder> {
 
     private List<Step> mSteps;
+    private OnStepAdapterClickListener mClickListener;
+
+    StepsOverviewAdapter(OnStepAdapterClickListener clickListener) {
+        mClickListener = clickListener;
+    }
 
     @NonNull
     @Override
@@ -30,6 +35,7 @@ public class StepsOverviewAdapter extends RecyclerView.Adapter<StepsOverviewAdap
         String number = String.format(Locale.getDefault(), "%02d", (mSteps.get(i).getId() + 1));
         holder.mItemNumber.setText(number + ".");
         holder.mItemName.setText(mSteps.get(i).getShortDescription());
+        holder.itemView.setOnClickListener(v -> mClickListener.onStepClick(i));
     }
 
     @Override
@@ -53,4 +59,9 @@ public class StepsOverviewAdapter extends RecyclerView.Adapter<StepsOverviewAdap
             mItemName = itemView.findViewById(R.id.item_step_name);
         }
     }
+
+    public interface OnStepAdapterClickListener {
+        void onStepClick(int position);
+    }
+
 }

@@ -23,7 +23,7 @@ import biz.laenger.android.vpbs.ViewPagerBottomSheetBehavior;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements StepsOverviewAdapter.OnStepAdapterClickListener {
 
     public static final String EXTRA_POSITION_KEY = "position";
 
@@ -135,35 +135,41 @@ public class DetailActivity extends AppCompatActivity {
                 }
             };
 
-    public void onClickBack(View v) {
+    public void onBtnClickBack(View v) {
         if (mViewPager.getCurrentItem() > 0
                 && mSheetState == ViewPagerBottomSheetBehavior.STATE_COLLAPSED)
             mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
     }
 
-    public void onClickOverview(View v) {
+    public void onBtnClickOverview(View v) {
         if (mSheetState == ViewPagerBottomSheetBehavior.STATE_COLLAPSED) {
             mSheetBehavior.setState(ViewPagerBottomSheetBehavior.STATE_EXPANDED);
             sheetExpandAnimation();
         }
     }
 
-    public void onClickForward(View v) {
+    public void onBtnClickForward(View v) {
         if (mViewPager.getCurrentItem() < mPagerAdapter.getCount() - 1
                 && mSheetState == ViewPagerBottomSheetBehavior.STATE_COLLAPSED)
             mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
     }
 
-    public void onClickIngredients(View v) {
+    public void onBtnClickIngredients(View v) {
         if (mSheetState == ViewPagerBottomSheetBehavior.STATE_EXPANDED) {
             mSheetViewPager.setCurrentItem(0);
         }
     }
 
-    public void onClickSteps(View v) {
+    public void onBtnClickSteps(View v) {
         if (mSheetState == ViewPagerBottomSheetBehavior.STATE_EXPANDED) {
             mSheetViewPager.setCurrentItem(1);
         }
+    }
+
+    @Override
+    public void onStepClick(int position) {
+        mViewPager.setCurrentItem(position);
+        onBackPressed();
     }
 
     private void sheetCollapseAnimation() {
