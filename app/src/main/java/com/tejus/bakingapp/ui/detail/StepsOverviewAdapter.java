@@ -13,6 +13,9 @@ import com.tejus.bakingapp.model.Step;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class StepsOverviewAdapter extends RecyclerView.Adapter<StepsOverviewAdapter.StepsOverviewViewHolder> {
 
     private List<Step> mSteps;
@@ -50,13 +53,14 @@ public class StepsOverviewAdapter extends RecyclerView.Adapter<StepsOverviewAdap
     }
 
     class StepsOverviewViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.item_step_number)
         TextView mItemNumber;
+        @BindView(R.id.item_step_name)
         TextView mItemName;
 
         StepsOverviewViewHolder(@NonNull View itemView) {
             super(itemView);
-            mItemNumber = itemView.findViewById(R.id.item_step_number);
-            mItemName = itemView.findViewById(R.id.item_step_name);
+            ButterKnife.bind(this, itemView);
         }
     }
 

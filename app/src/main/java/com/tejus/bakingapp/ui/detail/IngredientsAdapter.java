@@ -15,6 +15,9 @@ import com.tejus.bakingapp.model.Ingredient;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.IngredientsViewHolder> {
 
     private List<Ingredient> mIngredients;
@@ -55,15 +58,16 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     }
 
     class IngredientsViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.item_ingredient_name)
         TextView mItemName;
+        @BindView(R.id.item_ingredient_quantity)
         TextView mItemQuantity;
+        @BindView(R.id.item_ingredient_units)
         TextView mItemUnits;
 
         IngredientsViewHolder(@NonNull View itemView) {
             super(itemView);
-            mItemName = itemView.findViewById(R.id.item_ingredient_name);
-            mItemQuantity = itemView.findViewById(R.id.item_ingredient_quantity);
-            mItemUnits = itemView.findViewById(R.id.item_ingredient_units);
+            ButterKnife.bind(this, itemView);
         }
     }
 }
