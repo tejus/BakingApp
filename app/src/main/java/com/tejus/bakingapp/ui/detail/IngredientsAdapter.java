@@ -14,7 +14,6 @@ import com.tejus.bakingapp.model.Ingredient;
 import com.tejus.bakingapp.ui.WrapWidthTextView;
 
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,9 +40,12 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull IngredientsViewHolder holder, int i) {
+        Ingredient ingredient = mIngredients.get(i);
+        String quantity = holder.itemView.getResources()
+                .getString(R.string.detail_ingredient_quantity,
+                        ingredient.getQuantity(),
+                        ingredient.getMeasure().toLowerCase());
         holder.mItemName.setText(mIngredients.get(i).getIngredient());
-        String quantity = String.format(Locale.getDefault(), "%1$,.0f", mIngredients.get(i).getQuantity());
-        quantity = quantity.concat(" " + mIngredients.get(i).getMeasure().toLowerCase());
         holder.mItemQuantity.setText(quantity);
     }
 
