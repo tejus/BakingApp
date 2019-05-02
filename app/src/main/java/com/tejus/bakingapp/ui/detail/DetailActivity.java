@@ -131,7 +131,10 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
             new ViewPager.SimpleOnPageChangeListener() {
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                    mActionBar.setSubtitle("Step " + (position + 1));
+                    if (position == 0)
+                        mActionBar.setSubtitle(getString(R.string.detail_intro));
+                    else
+                        mActionBar.setSubtitle(getString(R.string.detail_step_number, (position)));
                 }
             };
 

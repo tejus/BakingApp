@@ -34,9 +34,11 @@ public class StepsOverviewAdapter extends RecyclerView.Adapter<StepsOverviewAdap
 
     @Override
     public void onBindViewHolder(@NonNull StepsOverviewViewHolder holder, int i) {
-        String number = holder.itemView.getResources()
-                .getString(R.string.detail_step_overview_number, (mSteps.get(i).getId() + 1));
-        holder.mItemNumber.setText(number);
+        if (i > 0) {
+            String number = holder.itemView.getResources()
+                    .getString(R.string.detail_step_overview_number, mSteps.get(i).getId());
+            holder.mItemNumber.setText(number);
+        }
         holder.mItemName.setText(mSteps.get(i).getShortDescription());
         holder.itemView.setOnClickListener(v -> mClickListener.onStepClick(i));
     }
