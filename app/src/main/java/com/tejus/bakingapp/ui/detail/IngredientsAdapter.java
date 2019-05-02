@@ -18,7 +18,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.IngredientsViewHolder> {
+public class IngredientsAdapter
+        extends RecyclerView.Adapter<IngredientsAdapter.IngredientsViewHolder> {
 
     private List<Ingredient> mIngredients;
     private int mMaxWidth;

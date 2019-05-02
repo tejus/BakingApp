@@ -15,7 +15,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StepsOverviewAdapter extends RecyclerView.Adapter<StepsOverviewAdapter.StepsOverviewViewHolder> {
+public class StepsOverviewAdapter
+        extends RecyclerView.Adapter<StepsOverviewAdapter.StepsOverviewViewHolder> {
 
     private List<Step> mSteps;
     private OnStepAdapterClickListener mClickListener;
