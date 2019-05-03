@@ -26,7 +26,10 @@ public class IngredientsAdapter
 
     IngredientsAdapter(Context context) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        mMaxWidth = metrics.widthPixels * 2 / 3;
+        if (metrics.widthPixels / metrics.density < 400)
+            mMaxWidth = metrics.widthPixels / 2;
+        else
+            mMaxWidth = metrics.widthPixels * 2 / 3;
     }
 
     @NonNull

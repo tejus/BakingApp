@@ -6,12 +6,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.tejus.bakingapp.model.Recipe;
 
-public class DetailSheetPagerAdapter extends FragmentPagerAdapter {
+public class DetailOverviewPagerAdapter extends FragmentPagerAdapter {
 
     private Fragment mIngredientsFragment;
     private Fragment mStepsFragment;
 
-    DetailSheetPagerAdapter(FragmentManager fm, Recipe recipe) {
+    DetailOverviewPagerAdapter(FragmentManager fm, Recipe recipe) {
         super(fm);
         mIngredientsFragment = IngredientsFragment.newInstance(recipe);
         mStepsFragment = StepsOverviewFragment.newInstance(recipe);

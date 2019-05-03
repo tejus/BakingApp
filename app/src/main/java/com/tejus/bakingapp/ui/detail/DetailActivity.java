@@ -2,6 +2,7 @@ package com.tejus.bakingapp.ui.detail;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -32,22 +33,24 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
     @BindView(R.id.viewpager_steps)
     ViewPager mViewPager;
     @BindView(R.id.viewpager_overview)
-    ViewPager mSheetViewPager;
+    ViewPager mOverviewViewPager;
+    @Nullable
     @BindView(R.id.include_bottom_sheet)
     LinearLayout mSheetLayout;
+    @Nullable
     @BindView(R.id.tv_overview)
     TextView mTvOverview;
     @BindView(R.id.iv_overview_back)
     ImageView mIvBack;
     @BindView(R.id.iv_overview_forward)
     ImageView mIvForward;
-    @BindView(R.id.tv_bottom_sheet_ingredients)
+    @BindView(R.id.tv_overview_ingredients)
     TextView mTvIngredients;
-    @BindView(R.id.tv_bottom_sheet_steps)
+    @BindView(R.id.tv_overview_steps)
     TextView mTvSteps;
 
+    private boolean mTwoPane;
     private ActionBar mActionBar;
-    private FragmentManager mFragmentManager;
     private DetailPagerAdapter mPagerAdapter;
     private Recipe mRecipe;
     private ViewPagerBottomSheetBehavior mSheetBehavior;
@@ -58,6 +61,8 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
+
+        mTwoPane = findViewById(R.id.include_card_view) != null;
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null && bundle.containsKey(EXTRA_POSITION_KEY)) {
@@ -76,19 +81,20 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
             mViewPager.addOnPageChangeListener(mStepChangeCallback);
         }
 
-        mFragmentManager = getSupportFragmentManager();
-        mPagerAdapter = new DetailPagerAdapter(mFragmentManager, mRecipe);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        mPagerAdapter = new DetailPagerAdapter(fragmentManager, mRecipe);
         mViewPager.setAdapter(mPagerAdapter);
-        setupBottomSheetBehavior();
+        DetailOverviewPagerAdapter overviewPagerAdapter =
+                new DetailOverviewPagerAdapter(fragmentManager, mRecipe);
+        mOverviewViewPager.setAdapter(overviewPagerAdapter);
+        mOverviewViewPager.addOnPageChangeListener(mOverviewTabChangeCallback);
+
+        if (!mTwoPane)
+            setupBottomSheetBehavior();
     }
 
     private void setupBottomSheetBehavior() {
-        DetailSheetPagerAdapter sheetPagerAdapter =
-                new DetailSheetPagerAdapter(mFragmentManager, mRecipe);
-        mSheetViewPager.setAdapter(sheetPagerAdapter);
-        mSheetViewPager.addOnPageChangeListener(mSheetChangeCallback);
-        BottomSheetUtils.setupViewPager(mSheetViewPager);
-
+        BottomSheetUtils.setupViewPager(mOverviewViewPager);
         mSheetBehavior = ViewPagerBottomSheetBehavior.from(mSheetLayout);
         mSheetState = mSheetBehavior.getState();
         mTvIngredients.post(() -> mTvIngredients.setTranslationY(mTvIngredients.getHeight()));
@@ -113,7 +119,7 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
                 }
             };
 
-    private ViewPager.SimpleOnPageChangeListener mSheetChangeCallback =
+    private ViewPager.SimpleOnPageChangeListener mOverviewTabChangeCallback =
             new ViewPager.SimpleOnPageChangeListener() {
                 @Override
                 public void onPageSelected(int position) {
@@ -139,8 +145,10 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
             };
 
     public void onBtnClickBack(View v) {
-        if (mViewPager.getCurrentItem() > 0
-                && mSheetState == ViewPagerBottomSheetBehavior.STATE_COLLAPSED)
+        if (!mTwoPane
+                && mSheetState != ViewPagerBottomSheetBehavior.STATE_COLLAPSED)
+            return;
+        if (mViewPager.getCurrentItem() > 0)
             mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
     }
 
@@ -152,27 +160,32 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
     }
 
     public void onBtnClickForward(View v) {
-        if (mViewPager.getCurrentItem() < mPagerAdapter.getCount() - 1
-                && mSheetState == ViewPagerBottomSheetBehavior.STATE_COLLAPSED)
+        if (!mTwoPane
+                && mSheetState != ViewPagerBottomSheetBehavior.STATE_COLLAPSED)
+            return;
+        if (mViewPager.getCurrentItem() < mPagerAdapter.getCount() - 1)
             mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
     }
 
     public void onBtnClickIngredients(View v) {
-        if (mSheetState == ViewPagerBottomSheetBehavior.STATE_EXPANDED) {
-            mSheetViewPager.setCurrentItem(0);
-        }
+        if (!mTwoPane
+                && mSheetState != ViewPagerBottomSheetBehavior.STATE_EXPANDED)
+            return;
+        mOverviewViewPager.setCurrentItem(0);
     }
 
     public void onBtnClickSteps(View v) {
-        if (mSheetState == ViewPagerBottomSheetBehavior.STATE_EXPANDED) {
-            mSheetViewPager.setCurrentItem(1);
-        }
+        if (!mTwoPane
+                && mSheetState != ViewPagerBottomSheetBehavior.STATE_EXPANDED)
+            return;
+        mOverviewViewPager.setCurrentItem(1);
     }
 
     @Override
     public void onStepClick(int position) {
         mViewPager.setCurrentItem(position);
-        onBackPressed();
+        if (!mTwoPane)
+            onBackPressed();
     }
 
     private void sheetCollapseAnimation() {
@@ -201,7 +214,8 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
 
     @Override
     public void onBackPressed() {
-        if (mSheetState != ViewPagerBottomSheetBehavior.STATE_COLLAPSED) {
+        if (!mTwoPane
+                && mSheetState != ViewPagerBottomSheetBehavior.STATE_COLLAPSED) {
             mSheetBehavior.setState(ViewPagerBottomSheetBehavior.STATE_COLLAPSED);
             sheetCollapseAnimation();
             return;
@@ -212,7 +226,8 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            if (mSheetState != ViewPagerBottomSheetBehavior.STATE_COLLAPSED) {
+            if (!mTwoPane
+                    && mSheetState != ViewPagerBottomSheetBehavior.STATE_COLLAPSED) {
                 mSheetBehavior.setState(ViewPagerBottomSheetBehavior.STATE_COLLAPSED);
                 sheetCollapseAnimation();
                 return true;

@@ -39,6 +39,8 @@ public class StepsOverviewAdapter
             String number = holder.itemView.getResources()
                     .getString(R.string.detail_step_overview_number, mSteps.get(i).getId());
             holder.mItemNumber.setText(number);
+        } else {
+            holder.mItemNumber.setText(null);
         }
         holder.mItemName.setText(mSteps.get(i).getShortDescription());
         holder.itemView.setOnClickListener(v -> mClickListener.onStepClick(i));

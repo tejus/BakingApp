@@ -4,24 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    app:behavior_peekHeight="56dp"
+    app:behavior_peekHeight="@dimen/detail_nav_bar_height"
     app:layout_behavior="@string/view_pager_bottom_sheet_behavior">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="@dimen/detail_nav_bar_height"
         android:background="@color/colorPrimary"
         android:elevation="4dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="match_parent"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tv_bottom_sheet_ingredients"
+                android:id="@+id/tv_overview_ingredients"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/ripple_primary_borderless"
                 android:gravity="center"
@@ -33,9 +33,9 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/tv_bottom_sheet_steps"
+                android:id="@+id/tv_overview_steps"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/ripple_primary_borderless"
                 android:gravity="center"
@@ -49,13 +49,13 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="match_parent"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/iv_overview_back"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
+                android:layout_width="@dimen/detail_nav_bar_height"
+                android:layout_height="match_parent"
                 android:layout_weight="0"
                 android:background="@drawable/ripple_primary_borderless"
                 android:clickable="true"
@@ -69,7 +69,7 @@
             <TextView
                 android:id="@+id/tv_overview"
                 android:layout_width="fill_parent"
-                android:layout_height="56dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
@@ -83,8 +83,8 @@
 
             <ImageView
                 android:id="@+id/iv_overview_forward"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
+                android:layout_width="@dimen/detail_nav_bar_height"
+                android:layout_height="match_parent"
                 android:layout_weight="0"
                 android:background="@drawable/ripple_primary_borderless"
                 android:clickable="true"
