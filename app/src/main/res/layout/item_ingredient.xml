@@ -2,7 +2,7 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
+    android:layout_height="@dimen/detail_overview_item_height"
     android:gravity="bottom"
     android:shrinkColumns="0"
     android:stretchColumns="1">
@@ -18,7 +18,7 @@
             android:layout_marginBottom="8dp"
             android:gravity="bottom"
             android:maxWidth="200dp"
-            android:maxLines="2"
+            android:maxLines="@integer/detail_overview_item_lines"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             android:textColor="@color/colorGrey"
             tools:text="unsalted butter, softened and cut into 1 in. cubes" />

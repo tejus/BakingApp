@@ -30,7 +30,7 @@
                 android:textAllCaps="false"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
                 android:textColor="@color/colorAccent"
-                android:textSize="18sp" />
+                android:textSize="@dimen/detail_overview_button_text" />
 
             <TextView
                 android:id="@+id/tv_overview_steps"
@@ -44,7 +44,7 @@
                 android:textAllCaps="false"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
                 android:textColor="@color/colorGrey"
-                android:textSize="18sp" />
+                android:textSize="@dimen/detail_overview_button_text" />
         </LinearLayout>
 
         <LinearLayout
@@ -79,7 +79,7 @@
                 android:textAllCaps="false"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
                 android:textColor="@color/colorAccent"
-                android:textSize="18sp" />
+                android:textSize="@dimen/detail_overview_button_text" />
 
             <ImageView
                 android:id="@+id/iv_overview_forward"

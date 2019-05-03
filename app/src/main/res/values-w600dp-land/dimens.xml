@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="detail_margin_card">0dp</dimen>
+    <dimen name="detail_nav_bar_height">48dp</dimen>
+    <dimen name="detail_overview_item_height">56dp</dimen>
+    <dimen name="detail_overview_button_text">14sp</dimen>
+</resources>

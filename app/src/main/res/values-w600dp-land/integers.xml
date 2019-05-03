@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="detail_overview_item_lines">3</integer>
+</resources>
