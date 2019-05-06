@@ -32,6 +32,7 @@
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="10dp"
             android:layout_weight="1"
+            android:layerType="software"
             android:minWidth="50dp"
             android:src="@drawable/line_dotted"
             tools:ignore="ContentDescription" />
