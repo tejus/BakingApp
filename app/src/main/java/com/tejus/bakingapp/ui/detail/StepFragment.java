@@ -9,10 +9,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,6 +25,7 @@ import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 import com.tejus.bakingapp.R;
 import com.tejus.bakingapp.model.Step;
 
@@ -44,8 +45,12 @@ public class StepFragment extends Fragment {
 
     @BindView(R.id.tv_step_heading)
     TextView mTvStepHeading;
+    @BindView(R.id.frame_preview_video)
+    FrameLayout mPreviewFrame;
+    @BindView(R.id.iv_video_overlay)
+    ImageView mIvVideoOverlay;
     @BindView(R.id.iv_preview)
-    ImageView mImageView;
+    ImageView mIvPreview;
     @BindView(R.id.player_view)
     PlayerView mPlayerView;
     @BindView(R.id.tv_step_desc)
@@ -113,6 +118,9 @@ public class StepFragment extends Fragment {
         if (mStep != null) {
             mTvStepHeading.setText(mStep.getShortDescription());
             mTvStepDesc.setText(mStep.getDescription());
+            if (!TextUtils.isEmpty(mStep.getThumbnailURL())) {
+                loadThumbnail();
+            }
             if (!TextUtils.isEmpty(mStep.getVideoURL())) {
                 mHasVideo = true;
                 initialiseMediaSession();
@@ -127,21 +135,36 @@ public class StepFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (Util.SDK_INT >= 24 && mHasVideo) {
-            initialisePlayer();
-        }
+        if (Util.SDK_INT >= 24)
+            if (mIsPlayerInitialised) {
+                initialisePlayer();
+            } else if (mHasVideo) {
+                initialiseVideoOverlay();
+            }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (Util.SDK_INT < 24 && mHasVideo) {
-            initialisePlayer();
-        }
+        if (Util.SDK_INT < 24)
+            if (mIsPlayerInitialised) {
+                initialisePlayer();
+            } else if (mHasVideo) {
+                initialiseVideoOverlay();
+            }
+    }
+
+    private void loadThumbnail() {
+        mPreviewFrame.setVisibility(View.VISIBLE);
+        mIvPreview.setVisibility(View.VISIBLE);
+        Picasso.get()
+                .load(Uri.parse(mStep.getThumbnailURL()))
+                .placeholder(R.color.colorPrimaryDark)
+                .error(R.color.colorGrey)
+                .into(mIvPreview);
     }
 
     private void initialiseMediaSession() {
-        Log.d(LOG_TAG, "initialiseMediaSession()");
         mMediaSession = new MediaSessionCompat(mContext, LOG_TAG);
         mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
                 MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
@@ -156,11 +179,21 @@ public class StepFragment extends Fragment {
         mMediaSession.setActive(true);
     }
 
+    private void initialiseVideoOverlay() {
+        mPreviewFrame.setVisibility(View.VISIBLE);
+        mIvVideoOverlay.setVisibility(View.VISIBLE);
+        mIvVideoOverlay.setOnClickListener((v) -> {
+            mPlayWhenReady = true;
+            initialisePlayer();
+        });
+    }
+
     private void initialisePlayer() {
+        mPreviewFrame.setVisibility(View.VISIBLE);
         mPlayerView.setVisibility(View.VISIBLE);
-        mImageView.setVisibility(View.GONE);
-        Log.d(LOG_TAG, "initialisePlayer()");
-        String userAgent = Util.getUserAgent(mContext, "ExoPlayerDemo");
+        mIvPreview.setVisibility(View.GONE);
+        mIvVideoOverlay.setVisibility(View.GONE);
+        String userAgent = Util.getUserAgent(mContext, "BakingApp");
 
         mPlayer = ExoPlayerFactory.newSimpleInstance(mContext);
         mPlayerView.setPlayer(mPlayer);
@@ -235,7 +268,7 @@ public class StepFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (Util.SDK_INT < 24 && mHasVideo && mIsPlayerInitialised) {
+        if (Util.SDK_INT < 24 && mIsPlayerInitialised) {
             releasePlayer();
         }
     }
@@ -243,7 +276,7 @@ public class StepFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if (Util.SDK_INT >= 24 && mHasVideo && mIsPlayerInitialised) {
+        if (Util.SDK_INT >= 24 && mIsPlayerInitialised) {
             releasePlayer();
         }
     }
