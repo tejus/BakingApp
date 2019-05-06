@@ -83,7 +83,9 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
 
         mFragmentManager = getSupportFragmentManager();
         mCurrentStep = (savedInstanceState != null) ? savedInstanceState.getInt(CURRENT_STEP_KEY) : 0;
-        loadFragment(mCurrentStep);
+        if (savedInstanceState == null) {
+            loadFragment(mCurrentStep);
+        }
 
         DetailOverviewPagerAdapter overviewPagerAdapter =
                 new DetailOverviewPagerAdapter(mFragmentManager, mRecipe);
