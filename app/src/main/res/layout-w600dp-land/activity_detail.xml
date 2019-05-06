@@ -24,8 +24,8 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent=".4" />
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager_steps"
+    <FrameLayout
+        android:id="@+id/frame_steps"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/detail_bottom_nav_step"

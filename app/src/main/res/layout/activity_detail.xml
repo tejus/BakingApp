@@ -29,8 +29,8 @@
         android:background="@color/colorPrimaryDark"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/viewpager_steps"
+        <FrameLayout
+            android:id="@+id/frame_steps"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/detail_nav_bar_height" />
