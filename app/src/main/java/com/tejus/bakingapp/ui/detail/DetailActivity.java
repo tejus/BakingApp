@@ -13,7 +13,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -62,6 +61,7 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
     private int mCurrentStep;
     private ViewPagerBottomSheetBehavior mSheetBehavior;
     private int mSheetState;
+    private boolean mFinished;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +95,7 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
         } else {
             mCurrentStep = savedInstanceState.getInt(CURRENT_STEP_KEY);
         }
+        mFinished = false;
 
         DetailOverviewPagerAdapter overviewPagerAdapter =
                 new DetailOverviewPagerAdapter(mFragmentManager, mRecipe);
@@ -207,6 +208,7 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
                 && mSheetState != ViewPagerBottomSheetBehavior.STATE_COLLAPSED)
             return;
         if (mCurrentStep == mRecipe.getSteps().size() - 1) {
+            mFinished = true;
             finish();
             return;
         }
@@ -280,6 +282,19 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences.Editor preferencesEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        if (mFinished) {
+            preferencesEditor.clear();
+        } else {
+            preferencesEditor.putInt(getString(R.string.pref_recipe_key), mRecipePosition);
+            preferencesEditor.putInt(getString(R.string.pref_step_key), mCurrentStep);
+        }
+        preferencesEditor.apply();
     }
 
     @Override
