@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Baking App</string>
     <string name="main_serves">Serves %1$d</string>
-    <string name="intro_dialog_start">Start cooking</string>
+    <string name="intro_dialog_start">Start cooking %1$s</string>
     <string name="detail_step_number">Step %1$d</string>
     <string name="detail_overview">Overview</string>
     <string name="detail_ingredients">Ingredients</string>

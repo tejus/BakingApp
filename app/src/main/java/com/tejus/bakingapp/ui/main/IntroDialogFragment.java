@@ -28,7 +28,7 @@ public class IntroDialogFragment extends DialogFragment {
     private static final String LOG_TAG = IntroDialogFragment.class.getSimpleName();
     private static final String EXTRA_RECIPE_POSITION_KEY = "position";
 
-    @BindView(R.id.btn_main_dialog_start)
+    @BindView(R.id.btn_intro_dialog_start)
     MaterialButton mBtnStartCooking;
     private Unbinder mUnbinder;
 
@@ -73,9 +73,10 @@ public class IntroDialogFragment extends DialogFragment {
 
         FragmentManager fragmentManager = getChildFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.frame_main_dialog, StepFragment.newInstance(recipe.getSteps().get(0), 0))
+                .replace(R.id.frame_intro_dialog, StepFragment.newInstance(recipe.getSteps().get(0), 0))
                 .commit();
 
+        mBtnStartCooking.setText(getString(R.string.intro_dialog_start, recipe.getName().toLowerCase()));
         mBtnStartCooking.setOnClickListener((v) -> {
             Intent intent = new Intent(mContext, DetailActivity.class);
             Bundle newBundle = new Bundle();

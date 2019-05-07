@@ -11,12 +11,12 @@
         android:orientation="vertical">
 
         <FrameLayout
-            android:id="@+id/frame_main_dialog"
+            android:id="@+id/frame_intro_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <android.support.design.button.MaterialButton
-            android:id="@+id/btn_main_dialog_start"
+            android:id="@+id/btn_intro_dialog_start"
             style="?attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/detail_nav_bar_height"
