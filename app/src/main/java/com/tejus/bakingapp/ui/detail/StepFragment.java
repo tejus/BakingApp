@@ -41,7 +41,7 @@ public class StepFragment extends Fragment {
     private static final String CURRENT_WINDOW_KEY = "current_window";
     private static final String PLAY_WHEN_READY_KEY = "play_when_ready";
     private static final String EXTRA_STEP_KEY = "step";
-
+    private static final String EXTRA_STEP_COUNT_KEY = "step_count";
 
     @BindView(R.id.tv_step_heading)
     TextView mTvStepHeading;
@@ -58,7 +58,7 @@ public class StepFragment extends Fragment {
     private Unbinder mUnbinder;
 
     private Context mContext;
-    Step mStep;
+    private Step mStep;
     private boolean mHasVideo;
     private boolean mIsPlayerInitialised;
     private SimpleExoPlayer mPlayer;
@@ -78,11 +78,12 @@ public class StepFragment extends Fragment {
         mContext = context;
     }
 
-    public static Fragment newInstance(Step step) {
+    public static Fragment newInstance(Step step, int stepCount) {
         Fragment fragment = new StepFragment();
         if (step != null) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(EXTRA_STEP_KEY, step);
+            bundle.putInt(EXTRA_STEP_COUNT_KEY, stepCount);
             fragment.setArguments(bundle);
         }
         return fragment;
@@ -96,8 +97,10 @@ public class StepFragment extends Fragment {
         mUnbinder = ButterKnife.bind(this, rootView);
 
         Bundle bundle = getArguments();
+        int stepCount;
         if (bundle != null && bundle.containsKey(EXTRA_STEP_KEY)) {
             mStep = bundle.getParcelable(EXTRA_STEP_KEY);
+            stepCount = bundle.getInt(EXTRA_STEP_COUNT_KEY);
         } else {
             throw new ClassCastException(rootView.getContext().toString()
                     + " must pass a Step object to fragment!");
@@ -117,7 +120,11 @@ public class StepFragment extends Fragment {
 
         if (mStep != null) {
             mTvStepHeading.setText(mStep.getShortDescription());
-            mTvStepDesc.setText(mStep.getDescription());
+            if (stepCount == 0) {
+                mTvStepDesc.setVisibility(View.GONE);
+            } else {
+                mTvStepDesc.setText(mStep.getDescription());
+            }
             if (!TextUtils.isEmpty(mStep.getThumbnailURL())) {
                 loadThumbnail();
             }

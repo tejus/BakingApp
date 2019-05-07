@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity implements StepsOverviewAdapter.OnStepAdapterClickListener {
 
-    public static final String EXTRA_POSITION_KEY = "position";
+    public static final String EXTRA_RECIPE_POSITION_KEY = "position";
     public static final String CURRENT_STEP_KEY = "step";
 
     @BindView(R.id.detail_toolbar)
@@ -66,8 +66,8 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
         mTwoPane = findViewById(R.id.include_card_view) != null;
 
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null && bundle.containsKey(EXTRA_POSITION_KEY)) {
-            int position = bundle.getInt(EXTRA_POSITION_KEY);
+        if (bundle != null && bundle.containsKey(EXTRA_RECIPE_POSITION_KEY)) {
+            int position = bundle.getInt(EXTRA_RECIPE_POSITION_KEY);
             mRecipe = Repository.getRecipe(this, position);
         } else {
             Toast.makeText(this, "Invalid recipe!", Toast.LENGTH_SHORT).show();
@@ -82,7 +82,7 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
         }
 
         mFragmentManager = getSupportFragmentManager();
-        mCurrentStep = (savedInstanceState != null) ? savedInstanceState.getInt(CURRENT_STEP_KEY) : 0;
+        mCurrentStep = (savedInstanceState != null) ? savedInstanceState.getInt(CURRENT_STEP_KEY) : 1;
         if (savedInstanceState == null) {
             loadFragment(mCurrentStep);
         }
@@ -113,14 +113,11 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
     }
 
     private Fragment getStepFragment(int position) {
-        return StepFragment.newInstance(mRecipe.getSteps().get(position));
+        return StepFragment.newInstance(mRecipe.getSteps().get(position), position);
     }
 
     private void updateToolbar() {
-        if (mCurrentStep == 0)
-            mActionBar.setSubtitle(getString(R.string.detail_intro));
-        else
-            mActionBar.setSubtitle(getString(R.string.detail_step_number, (mCurrentStep)));
+        mActionBar.setSubtitle(getString(R.string.detail_step_number, (mCurrentStep)));
     }
 
     private ViewPagerBottomSheetBehavior.BottomSheetCallback mSheetCallback =
@@ -155,7 +152,7 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
             };
 
     public void onBtnClickBack(View v) {
-        if (mCurrentStep == 0 || (!mTwoPane
+        if (mCurrentStep == 1 || (!mTwoPane
                 && mSheetState != ViewPagerBottomSheetBehavior.STATE_COLLAPSED))
             return;
         loadFragment(--mCurrentStep);

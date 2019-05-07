@@ -1,7 +1,9 @@
 package com.tejus.bakingapp.ui.main;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +14,6 @@ import android.util.Log;
 import com.tejus.bakingapp.R;
 import com.tejus.bakingapp.data.Repository;
 import com.tejus.bakingapp.model.Recipe;
-import com.tejus.bakingapp.ui.detail.DetailActivity;
 
 import java.util.List;
 
@@ -66,10 +67,15 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.OnRec
 
     @Override
     public void onRecipeClick(int position) {
-        Intent intent = new Intent(this, DetailActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt(DetailActivity.EXTRA_POSITION_KEY, position);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            transaction.remove(prev);
+        }
+        transaction.addToBackStack(null);
+
+        DialogFragment newDialog = IntroDialogFragment.newInstance(position);
+        newDialog.show(transaction, "dialog");
     }
 }

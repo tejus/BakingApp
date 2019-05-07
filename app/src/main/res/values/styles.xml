@@ -14,4 +14,9 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="DialogStyle" parent="Theme.MaterialComponents.Dialog">
+        <item name="android:windowMinWidthMinor">100%</item>
+        <item name="android:windowMinWidthMajor">65%</item>
+    </style>
+
 </resources>
