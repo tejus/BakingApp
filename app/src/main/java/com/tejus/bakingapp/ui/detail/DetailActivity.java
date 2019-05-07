@@ -94,6 +94,7 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
             loadFragment(mCurrentStep);
         } else {
             mCurrentStep = savedInstanceState.getInt(CURRENT_STEP_KEY);
+            updateNavIcons(mCurrentStep);
         }
         mFinished = false;
 
@@ -119,7 +120,12 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
         mFragmentManager.beginTransaction()
                 .replace(R.id.frame_steps, getStepFragment(position))
                 .commit();
+        updateNavIcons(position);
+        mCurrentStep = position;
+        updateToolbar();
+    }
 
+    private void updateNavIcons(int position) {
         if (position == mRecipe.getSteps().size() - 1) {
             mIvForward.setImageDrawable(
                     getDrawable(R.drawable.baseline_done_white_24)
@@ -145,9 +151,6 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
                     .alpha(1f)
                     .setListener(null);
         }
-
-        mCurrentStep = position;
-        updateToolbar();
     }
 
     private Fragment getStepFragment(int position) {
