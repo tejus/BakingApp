@@ -106,18 +106,6 @@ public class StepFragment extends Fragment {
                     + " must pass a Step object to fragment!");
         }
 
-        if (savedInstanceState != null) {
-            mCurrentPosition = savedInstanceState.getLong(CURRENT_POSITION_KEY);
-            mCurrentWindowIndex = savedInstanceState.getInt(CURRENT_WINDOW_KEY);
-            mPlayWhenReady = savedInstanceState.getBoolean(PLAY_WHEN_READY_KEY);
-            mIsPlayerInitialised = true;
-        } else {
-            mCurrentPosition = C.TIME_UNSET;
-            mCurrentWindowIndex = C.INDEX_UNSET;
-            mPlayWhenReady = false;
-            mIsPlayerInitialised = false;
-        }
-
         if (mStep != null) {
             mTvStepHeading.setText(mStep.getShortDescription());
             if (stepCount == 0) {
@@ -134,6 +122,18 @@ public class StepFragment extends Fragment {
             } else {
                 mHasVideo = false;
             }
+        }
+
+        if (savedInstanceState != null && mHasVideo) {
+            mCurrentPosition = savedInstanceState.getLong(CURRENT_POSITION_KEY);
+            mCurrentWindowIndex = savedInstanceState.getInt(CURRENT_WINDOW_KEY);
+            mPlayWhenReady = savedInstanceState.getBoolean(PLAY_WHEN_READY_KEY);
+            mIsPlayerInitialised = true;
+        } else {
+            mCurrentPosition = C.TIME_UNSET;
+            mCurrentWindowIndex = C.INDEX_UNSET;
+            mPlayWhenReady = false;
+            mIsPlayerInitialised = false;
         }
         // Inflate the layout for this fragment
         return rootView;
