@@ -1,6 +1,10 @@
 package com.tejus.bakingapp.ui.detail;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -49,7 +54,8 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
     @BindView(R.id.tv_overview_steps)
     TextView mTvSteps;
 
-    FragmentManager mFragmentManager;
+    private int mRecipePosition;
+    private FragmentManager mFragmentManager;
     private boolean mTwoPane;
     private ActionBar mActionBar;
     private Recipe mRecipe;
@@ -67,8 +73,8 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null && bundle.containsKey(EXTRA_RECIPE_POSITION_KEY)) {
-            int position = bundle.getInt(EXTRA_RECIPE_POSITION_KEY);
-            mRecipe = Repository.getRecipe(this, position);
+            mRecipePosition = bundle.getInt(EXTRA_RECIPE_POSITION_KEY);
+            mRecipe = Repository.getRecipe(this, mRecipePosition);
         } else {
             Toast.makeText(this, "Invalid recipe!", Toast.LENGTH_SHORT).show();
             finish();
@@ -82,9 +88,12 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
         }
 
         mFragmentManager = getSupportFragmentManager();
-        mCurrentStep = (savedInstanceState != null) ? savedInstanceState.getInt(CURRENT_STEP_KEY) : 1;
         if (savedInstanceState == null) {
+            mCurrentStep = 1;
+            mIvBack.setVisibility(View.INVISIBLE);
             loadFragment(mCurrentStep);
+        } else {
+            mCurrentStep = savedInstanceState.getInt(CURRENT_STEP_KEY);
         }
 
         DetailOverviewPagerAdapter overviewPagerAdapter =
@@ -109,6 +118,34 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
         mFragmentManager.beginTransaction()
                 .replace(R.id.frame_steps, getStepFragment(position))
                 .commit();
+
+        if (position == mRecipe.getSteps().size() - 1) {
+            mIvForward.setImageDrawable(
+                    getDrawable(R.drawable.baseline_done_white_24)
+            );
+        } else if (mCurrentStep == mRecipe.getSteps().size() - 1) {
+            mIvForward.setImageDrawable(
+                    getDrawable(R.drawable.baseline_chevron_right_white_24)
+            );
+        }
+
+        if (position == 1) {
+            mIvBack.animate()
+                    .alpha(0f)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mIvBack.setVisibility(View.INVISIBLE);
+                        }
+                    });
+        } else if (mCurrentStep == 1) {
+            mIvBack.setVisibility(View.VISIBLE);
+            mIvBack.animate()
+                    .alpha(1f)
+                    .setListener(null);
+        }
+
+        mCurrentStep = position;
         updateToolbar();
     }
 
@@ -155,7 +192,7 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
         if (mCurrentStep == 1 || (!mTwoPane
                 && mSheetState != ViewPagerBottomSheetBehavior.STATE_COLLAPSED))
             return;
-        loadFragment(--mCurrentStep);
+        loadFragment(mCurrentStep - 1);
     }
 
     public void onBtnClickOverview(View v) {
@@ -166,10 +203,14 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
     }
 
     public void onBtnClickForward(View v) {
-        if (mCurrentStep == mRecipe.getSteps().size() - 1 || (!mTwoPane
-                && mSheetState != ViewPagerBottomSheetBehavior.STATE_COLLAPSED))
+        if (!mTwoPane
+                && mSheetState != ViewPagerBottomSheetBehavior.STATE_COLLAPSED)
             return;
-        loadFragment(++mCurrentStep);
+        if (mCurrentStep == mRecipe.getSteps().size() - 1) {
+            finish();
+            return;
+        }
+        loadFragment(mCurrentStep + 1);
     }
 
     public void onBtnClickIngredients(View v) {
@@ -188,8 +229,7 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
 
     @Override
     public void onStepClick(int position) {
-        mCurrentStep = position;
-        loadFragment(mCurrentStep);
+        loadFragment(position);
         if (!mTwoPane)
             onBackPressed();
     }
