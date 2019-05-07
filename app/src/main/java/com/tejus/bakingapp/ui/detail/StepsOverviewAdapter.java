@@ -35,21 +35,21 @@ public class StepsOverviewAdapter
 
     @Override
     public void onBindViewHolder(@NonNull StepsOverviewViewHolder holder, int i) {
-        if (i > 0) {
-            String number = holder.itemView.getResources()
-                    .getString(R.string.detail_step_overview_number, mSteps.get(i).getId());
-            holder.mItemNumber.setText(number);
-        } else {
-            holder.mItemNumber.setText(null);
-        }
-        holder.mItemName.setText(mSteps.get(i).getShortDescription());
-        holder.itemView.setOnClickListener(v -> mClickListener.onStepClick(i));
+        //We do not want to show the introduction step in the list
+        //since that has its own dialog from MainActivity
+        String number = holder.itemView.getResources()
+                .getString(R.string.detail_step_overview_number, mSteps.get(i + 1).getId());
+        holder.mItemNumber.setText(number);
+        holder.mItemName.setText(mSteps.get(i + 1).getShortDescription());
+        holder.itemView.setOnClickListener(v -> mClickListener.onStepClick(i + 1));
     }
 
     @Override
     public int getItemCount() {
         if (mSteps == null) return 0;
-        return mSteps.size();
+        //We do not want to show the introduction step in the list
+        //since that has its own dialog from MainActivity
+        return mSteps.size() - 1;
     }
 
     void setSteps(List<Step> steps) {
