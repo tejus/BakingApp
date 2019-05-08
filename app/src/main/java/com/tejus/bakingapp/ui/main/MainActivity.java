@@ -12,7 +12,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -65,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.OnRec
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         int spacing = (int) (getResources()
                 .getDimension(R.dimen.main_vertical_spacing) / displayMetrics.density);
-        Log.d("MainActivity", "Grid Spacing is: " + spacing);
         return spacing;
     }
 
@@ -74,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.OnRec
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         int scalingFactor = (int) (getResources()
                 .getDimension(R.dimen.main_minimum_width) / displayMetrics.density);
-        Log.d("MainActivity", "Minimum width is: " + scalingFactor + " for display of width " + dpWidth);
         int columnCount = (int) (dpWidth / scalingFactor);
         if (columnCount < 1) {
             columnCount = 1;
