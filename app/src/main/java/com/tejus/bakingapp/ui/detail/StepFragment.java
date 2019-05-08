@@ -1,7 +1,9 @@
 package com.tejus.bakingapp.ui.detail;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +14,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,6 +46,7 @@ public class StepFragment extends Fragment {
     private static final String PLAYER_INITIALISED_KEY = "player_initialised";
     private static final String EXTRA_STEP_KEY = "step";
     private static final String EXTRA_STEP_COUNT_KEY = "step_count";
+    private static final int FULLSCREEN_REQUEST_CODE = 6281;
 
     @BindView(R.id.tv_step_heading)
     TextView mTvStepHeading;
@@ -56,6 +60,8 @@ public class StepFragment extends Fragment {
     PlayerView mPlayerView;
     @BindView(R.id.tv_step_desc)
     TextView mTvStepDesc;
+    @BindView(R.id.btn_fullscreen)
+    Button mBtnFullscreen;
     private Unbinder mUnbinder;
 
     private Context mContext;
@@ -119,6 +125,7 @@ public class StepFragment extends Fragment {
             }
             if (!TextUtils.isEmpty(mStep.getVideoURL())) {
                 mHasVideo = true;
+                mBtnFullscreen.setVisibility(View.VISIBLE);
                 initialiseMediaSession();
             } else {
                 mHasVideo = false;
@@ -136,6 +143,8 @@ public class StepFragment extends Fragment {
             mPlayWhenReady = false;
             mIsPlayerInitialised = false;
         }
+
+        mBtnFullscreen.setOnClickListener((v) -> fullscreen());
         // Inflate the layout for this fragment
         return rootView;
     }
@@ -226,6 +235,35 @@ public class StepFragment extends Fragment {
 
         mIsPlayerInitialised = true;
         mPlayer.setPlayWhenReady(mPlayWhenReady);
+    }
+
+    private void fullscreen() {
+        Intent intent = new Intent(mContext, FullscreenActivity.class);
+        Bundle bundle = new Bundle();
+        mCurrentPosition = mPlayer.getCurrentPosition();
+        mCurrentWindowIndex = mPlayer.getCurrentWindowIndex();
+        mPlayWhenReady = mPlayer.getPlayWhenReady();
+        bundle.putString(FullscreenActivity.EXTRA_VIDEO_URL_KEY, mStep.getVideoURL());
+        bundle.putLong(FullscreenActivity.EXTRA_CURRENT_POSITION_KEY, mCurrentPosition);
+        bundle.putInt(FullscreenActivity.EXTRA_CURRENT_WINDOW_INDEX_KEY, mCurrentWindowIndex);
+        bundle.putBoolean(FullscreenActivity.EXTRA_PLAY_WHEN_READY_KEY, mPlayWhenReady);
+        intent.putExtras(bundle);
+        mPlayWhenReady = false;
+        mPlayer.setPlayWhenReady(false);
+        startActivityForResult(intent, FULLSCREEN_REQUEST_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == FULLSCREEN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            mCurrentPosition = data.getLongExtra(FullscreenActivity.EXTRA_CURRENT_POSITION_KEY, C.TIME_UNSET);
+            mCurrentWindowIndex = data.getIntExtra(FullscreenActivity.EXTRA_CURRENT_WINDOW_INDEX_KEY, C.INDEX_UNSET);
+            mPlayWhenReady = data.getBooleanExtra(FullscreenActivity.EXTRA_PLAY_WHEN_READY_KEY, false);
+            if (mCurrentPosition != C.TIME_UNSET) {
+                initialisePlayer();
+            }
+        }
     }
 
     private void releasePlayer() {
