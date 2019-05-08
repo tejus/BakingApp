@@ -71,10 +71,12 @@ public class IntroDialogFragment extends DialogFragment {
             throwError();
         }
 
-        FragmentManager fragmentManager = getChildFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.frame_intro_dialog, StepFragment.newInstance(recipe.getSteps().get(0), 0))
-                .commit();
+        if (savedInstanceState == null) {
+            FragmentManager fragmentManager = getChildFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.frame_intro_dialog, StepFragment.newInstance(recipe.getSteps().get(0), 0))
+                    .commit();
+        }
 
         mBtnStartCooking.setText(getString(R.string.intro_dialog_start, recipe.getName().toLowerCase()));
         mBtnStartCooking.setOnClickListener((v) -> {
