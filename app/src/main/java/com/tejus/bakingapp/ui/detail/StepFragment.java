@@ -40,6 +40,7 @@ public class StepFragment extends Fragment {
     private static final String CURRENT_POSITION_KEY = "current_position";
     private static final String CURRENT_WINDOW_KEY = "current_window";
     private static final String PLAY_WHEN_READY_KEY = "play_when_ready";
+    private static final String PLAYER_INITIALISED_KEY = "player_initialised";
     private static final String EXTRA_STEP_KEY = "step";
     private static final String EXTRA_STEP_COUNT_KEY = "step_count";
 
@@ -128,7 +129,7 @@ public class StepFragment extends Fragment {
             mCurrentPosition = savedInstanceState.getLong(CURRENT_POSITION_KEY);
             mCurrentWindowIndex = savedInstanceState.getInt(CURRENT_WINDOW_KEY);
             mPlayWhenReady = savedInstanceState.getBoolean(PLAY_WHEN_READY_KEY);
-            mIsPlayerInitialised = true;
+            mIsPlayerInitialised = savedInstanceState.getBoolean(PLAYER_INITIALISED_KEY);
         } else {
             mCurrentPosition = C.TIME_UNSET;
             mCurrentWindowIndex = C.INDEX_UNSET;
@@ -294,6 +295,7 @@ public class StepFragment extends Fragment {
         outState.putLong(CURRENT_POSITION_KEY, mCurrentPosition);
         outState.putInt(CURRENT_WINDOW_KEY, mCurrentWindowIndex);
         outState.putBoolean(PLAY_WHEN_READY_KEY, mPlayWhenReady);
+        outState.putBoolean(PLAYER_INITIALISED_KEY, mIsPlayerInitialised);
     }
 
     @Override
