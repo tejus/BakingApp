@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
 public class DetailActivity extends AppCompatActivity implements StepsOverviewAdapter.OnStepAdapterClickListener {
 
     public static final String EXTRA_RECIPE_POSITION_KEY = "position";
-    public static final String CURRENT_STEP_KEY = "step";
+    public static final String EXTRA_CURRENT_STEP_KEY = "step";
 
     @BindView(R.id.detail_toolbar)
     Toolbar mToolbar;
@@ -58,6 +58,7 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
     private boolean mTwoPane;
     private ActionBar mActionBar;
     private Recipe mRecipe;
+    private int mTotalSteps;
     private int mCurrentStep;
     private ViewPagerBottomSheetBehavior mSheetBehavior;
     private int mSheetState;
@@ -75,9 +76,19 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
         if (bundle != null && bundle.containsKey(EXTRA_RECIPE_POSITION_KEY)) {
             mRecipePosition = bundle.getInt(EXTRA_RECIPE_POSITION_KEY);
             mRecipe = Repository.getRecipe(this, mRecipePosition);
+            mTotalSteps = mRecipe.getSteps().size() - 1;
+            if (bundle.containsKey(EXTRA_CURRENT_STEP_KEY)) {
+                mCurrentStep = bundle.getInt(EXTRA_CURRENT_STEP_KEY);
+            } else {
+                mCurrentStep = 1;
+            }
         } else {
             Toast.makeText(this, "Invalid recipe!", Toast.LENGTH_SHORT).show();
             finish();
+        }
+
+        if (mCurrentStep == 1) {
+            mIvBack.setVisibility(View.INVISIBLE);
         }
 
         setSupportActionBar(mToolbar);
@@ -89,12 +100,11 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
 
         mFragmentManager = getSupportFragmentManager();
         if (savedInstanceState == null) {
-            mCurrentStep = 1;
-            mIvBack.setVisibility(View.INVISIBLE);
             loadFragment(mCurrentStep);
         } else {
-            mCurrentStep = savedInstanceState.getInt(CURRENT_STEP_KEY);
+            mCurrentStep = savedInstanceState.getInt(EXTRA_CURRENT_STEP_KEY);
             updateNavIcons(mCurrentStep);
+            updateToolbar();
         }
         mFinished = false;
 
@@ -126,11 +136,11 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
     }
 
     private void updateNavIcons(int position) {
-        if (position == mRecipe.getSteps().size() - 1) {
+        if (position == mTotalSteps) {
             mIvForward.setImageDrawable(
                     getDrawable(R.drawable.baseline_done_white_24)
             );
-        } else if (mCurrentStep == mRecipe.getSteps().size() - 1) {
+        } else if (mCurrentStep == mTotalSteps) {
             mIvForward.setImageDrawable(
                     getDrawable(R.drawable.baseline_chevron_right_white_24)
             );
@@ -210,7 +220,7 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
         if (!mTwoPane
                 && mSheetState != ViewPagerBottomSheetBehavior.STATE_COLLAPSED)
             return;
-        if (mCurrentStep == mRecipe.getSteps().size() - 1) {
+        if (mCurrentStep == mTotalSteps) {
             mFinished = true;
             finish();
             return;
@@ -303,6 +313,6 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(CURRENT_STEP_KEY, mCurrentStep);
+        outState.putInt(EXTRA_CURRENT_STEP_KEY, mCurrentStep);
     }
 }

@@ -26,6 +26,29 @@
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/main_vertical_margin"
         android:layout_marginEnd="@dimen/main_vertical_margin"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/bar_continue"
         app:layout_constraintTop_toBottomOf="@+id/main_toolbar" />
+
+    <LinearLayout
+        android:id="@+id/bar_continue"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/detail_nav_bar_height"
+        android:background="@color/colorPrimary"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/tv_continue"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/detail_nav_bar_height"
+            android:background="@drawable/ripple_primary_borderless"
+            android:gravity="center"
+            android:text="@string/main_continue"
+            android:textAllCaps="false"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/detail_overview_button_text" />
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>
