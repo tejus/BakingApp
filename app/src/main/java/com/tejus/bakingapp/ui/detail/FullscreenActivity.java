@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.exoplayer2.C;
@@ -111,6 +112,10 @@ public class FullscreenActivity extends AppCompatActivity {
         }
 
         mPlayer.setPlayWhenReady(mPlayWhenReady);
+
+        ImageView fullscreenIcon = mPlayerView.findViewById(R.id.exo_fullscreen);
+        fullscreenIcon.setImageDrawable(getDrawable(R.drawable.baseline_fullscreen_exit_white_36));
+        fullscreenIcon.setOnClickListener((v) -> exitFullscreen());
     }
 
     private void releasePlayer() {

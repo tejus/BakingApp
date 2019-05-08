@@ -14,7 +14,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -60,8 +59,6 @@ public class StepFragment extends Fragment {
     PlayerView mPlayerView;
     @BindView(R.id.tv_step_desc)
     TextView mTvStepDesc;
-    @BindView(R.id.btn_fullscreen)
-    Button mBtnFullscreen;
     private Unbinder mUnbinder;
 
     private Context mContext;
@@ -125,7 +122,6 @@ public class StepFragment extends Fragment {
             }
             if (!TextUtils.isEmpty(mStep.getVideoURL())) {
                 mHasVideo = true;
-                mBtnFullscreen.setVisibility(View.VISIBLE);
                 initialiseMediaSession();
             } else {
                 mHasVideo = false;
@@ -144,7 +140,6 @@ public class StepFragment extends Fragment {
             mIsPlayerInitialised = false;
         }
 
-        mBtnFullscreen.setOnClickListener((v) -> fullscreen());
         // Inflate the layout for this fragment
         return rootView;
     }
@@ -235,9 +230,13 @@ public class StepFragment extends Fragment {
 
         mIsPlayerInitialised = true;
         mPlayer.setPlayWhenReady(mPlayWhenReady);
+
+        ImageView fullscreenToggle = mPlayerView.findViewById(R.id.exo_fullscreen);
+        fullscreenToggle.setImageDrawable(mContext.getDrawable(R.drawable.baseline_fullscreen_white_36));
+        fullscreenToggle.setOnClickListener((v) -> enterFullscreen());
     }
 
-    private void fullscreen() {
+    private void enterFullscreen() {
         Intent intent = new Intent(mContext, FullscreenActivity.class);
         Bundle bundle = new Bundle();
         mCurrentPosition = mPlayer.getCurrentPosition();
