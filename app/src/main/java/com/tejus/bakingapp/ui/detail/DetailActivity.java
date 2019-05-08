@@ -87,10 +87,6 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
             finish();
         }
 
-        if (mCurrentStep == 1) {
-            mIvBack.setVisibility(View.INVISIBLE);
-        }
-
         setSupportActionBar(mToolbar);
         mActionBar = getSupportActionBar();
         if (mActionBar != null) {
@@ -106,6 +102,11 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
             updateNavIcons(mCurrentStep);
             updateToolbar();
         }
+
+        if (mCurrentStep == 1) {
+            mIvBack.setVisibility(View.INVISIBLE);
+        }
+
         mFinished = false;
 
         DetailOverviewPagerAdapter overviewPagerAdapter =
