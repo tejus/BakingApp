@@ -25,12 +25,13 @@
     <ImageButton
         android:id="@+id/exo_fullscreen"
         style="@style/ExoMediaButton"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:layout_margin="4dp"
         android:alpha=".8"
-        android:scaleType="centerCrop"
+        android:scaleType="center"
         android:src="@drawable/baseline_fullscreen_white_36"
         android:tint="@color/colorAccent" />
 
