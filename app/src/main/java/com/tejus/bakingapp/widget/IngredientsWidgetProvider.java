@@ -37,11 +37,13 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
             stackBuilder.addNextIntentWithParentStack(intent);
             PendingIntent pendingIntent = stackBuilder.getPendingIntent(578, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            views.setOnClickPendingIntent(R.id.widget_ingredients, pendingIntent);
+            views.setTextViewText(R.id.tv_widget_heading, recipe.getName());
+            views.setOnClickPendingIntent(R.id.tv_widget_heading, pendingIntent);
         } else {
             intent = new Intent(context, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 1256, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            views.setOnClickPendingIntent(R.id.widget_ingredients, pendingIntent);
+            views.setTextViewText(R.id.tv_widget_heading, "Start cooking");
+            views.setOnClickPendingIntent(R.id.tv_widget_heading, pendingIntent);
         }
 
         // Instruct the widget manager to update the widget
