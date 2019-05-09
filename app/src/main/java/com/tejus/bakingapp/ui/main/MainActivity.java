@@ -107,20 +107,17 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.OnRec
         if (recipeId > -1) {
             int currentStep = preferences.getInt(getString(R.string.pref_step_key), -1);
             if (currentStep > 0) {
-                for (Recipe recipe : mRecipes) {
-                    if (recipe.getId() == recipeId) {
-                        final Intent intent = new Intent(this, DetailActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable(DetailActivity.EXTRA_RECIPE_KEY, recipe);
-                        bundle.putInt(DetailActivity.EXTRA_CURRENT_STEP_KEY, currentStep);
-                        intent.putExtras(bundle);
-                        String name = recipe.getName();
-                        mBarContinue.setVisibility(View.VISIBLE);
-                        mTvContinue.setText(getString(R.string.main_continue, name, currentStep));
-                        mBarContinue.setOnClickListener((v) -> startActivity(intent));
-                        return;
-                    }
-                }
+                Recipe recipe = Recipe.getById(mRecipes, recipeId);
+                final Intent intent = new Intent(this, DetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(DetailActivity.EXTRA_RECIPE_KEY, recipe);
+                bundle.putInt(DetailActivity.EXTRA_CURRENT_STEP_KEY, currentStep);
+                intent.putExtras(bundle);
+                String name = recipe.getName();
+                mBarContinue.setVisibility(View.VISIBLE);
+                mTvContinue.setText(getString(R.string.main_continue, name, currentStep));
+                mBarContinue.setOnClickListener((v) -> startActivity(intent));
+                return;
             }
         } else {
             mBarContinue.setVisibility(View.GONE);

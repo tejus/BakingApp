@@ -105,4 +105,13 @@ public class Recipe implements Parcelable {
             return new Recipe[size];
         }
     };
+
+    public static Recipe getById(List<Recipe> recipes, int id) {
+        for (Recipe recipe : recipes) {
+            if (recipe.getId() == id) {
+                return recipe;
+            }
+        }
+        return null;
+    }
 }
