@@ -64,7 +64,7 @@ public class StepFragment extends Fragment {
     private Context mContext;
     private Step mStep;
     private boolean mHasVideo;
-    private boolean mIsPlayerInitialised;
+    private boolean mWasPlayerInitialised;
     private SimpleExoPlayer mPlayer;
     private long mCurrentPosition;
     private int mCurrentWindowIndex;
@@ -118,9 +118,11 @@ public class StepFragment extends Fragment {
                 mTvStepDesc.setText(mStep.getDescription());
             }
             if (!TextUtils.isEmpty(mStep.getThumbnailURL())) {
+                mPreviewFrame.setVisibility(View.VISIBLE);
                 loadThumbnail();
             }
             if (!TextUtils.isEmpty(mStep.getVideoURL())) {
+                mPreviewFrame.setVisibility(View.VISIBLE);
                 mHasVideo = true;
                 initialiseMediaSession();
             } else {
@@ -132,12 +134,12 @@ public class StepFragment extends Fragment {
             mCurrentPosition = savedInstanceState.getLong(CURRENT_POSITION_KEY);
             mCurrentWindowIndex = savedInstanceState.getInt(CURRENT_WINDOW_KEY);
             mPlayWhenReady = savedInstanceState.getBoolean(PLAY_WHEN_READY_KEY);
-            mIsPlayerInitialised = savedInstanceState.getBoolean(PLAYER_INITIALISED_KEY);
+            mWasPlayerInitialised = savedInstanceState.getBoolean(PLAYER_INITIALISED_KEY);
         } else {
             mCurrentPosition = C.TIME_UNSET;
             mCurrentWindowIndex = C.INDEX_UNSET;
             mPlayWhenReady = false;
-            mIsPlayerInitialised = false;
+            mWasPlayerInitialised = false;
         }
 
         // Inflate the layout for this fragment
@@ -148,10 +150,10 @@ public class StepFragment extends Fragment {
     public void onStart() {
         super.onStart();
         if (Util.SDK_INT >= 24)
-            if (mIsPlayerInitialised) {
+            if (mWasPlayerInitialised) {
                 initialisePlayer();
             } else if (mHasVideo) {
-                initialiseVideoOverlay();
+                showVideoOverlay();
             }
     }
 
@@ -159,16 +161,15 @@ public class StepFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (Util.SDK_INT < 24)
-            if (mIsPlayerInitialised) {
+            if (mWasPlayerInitialised) {
                 initialisePlayer();
             } else if (mHasVideo) {
-                initialiseVideoOverlay();
+                showVideoOverlay();
             }
     }
 
     private void loadThumbnail() {
-        mPreviewFrame.setVisibility(View.VISIBLE);
-        mIvPreview.setVisibility(View.VISIBLE);
+        showThumbnail();
         Picasso.get()
                 .load(Uri.parse(mStep.getThumbnailURL()))
                 .placeholder(R.color.colorPrimaryDark)
@@ -185,14 +186,13 @@ public class StepFragment extends Fragment {
                 .setActions(PlaybackStateCompat.ACTION_PLAY |
                         PlaybackStateCompat.ACTION_PAUSE |
                         PlaybackStateCompat.ACTION_PLAY_PAUSE |
-                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS);
+                        PlaybackStateCompat.ACTION_STOP);
         mMediaSession.setPlaybackState(mStateBuilder.build());
         mMediaSession.setCallback(new MediaSessionCallback());
         mMediaSession.setActive(true);
     }
 
-    private void initialiseVideoOverlay() {
-        mPreviewFrame.setVisibility(View.VISIBLE);
+    private void showVideoOverlay() {
         mIvVideoOverlay.setVisibility(View.VISIBLE);
         mIvVideoOverlay.setOnClickListener((v) -> {
             mPlayWhenReady = true;
@@ -200,11 +200,19 @@ public class StepFragment extends Fragment {
         });
     }
 
-    private void initialisePlayer() {
-        mPreviewFrame.setVisibility(View.VISIBLE);
+    private void showThumbnail() {
+        mPlayerView.setVisibility(View.GONE);
+        mIvPreview.setVisibility(View.VISIBLE);
+    }
+
+    private void showVideo() {
         mPlayerView.setVisibility(View.VISIBLE);
         mIvPreview.setVisibility(View.GONE);
         mIvVideoOverlay.setVisibility(View.GONE);
+    }
+
+    private void initialisePlayer() {
+        showVideo();
         String userAgent = Util.getUserAgent(mContext, "BakingApp");
 
         mPlayer = ExoPlayerFactory.newSimpleInstance(mContext);
@@ -228,7 +236,7 @@ public class StepFragment extends Fragment {
             mPlayer.prepare(extractorMediaSource);
         }
 
-        mIsPlayerInitialised = true;
+        mWasPlayerInitialised = true;
         mPlayer.setPlayWhenReady(mPlayWhenReady);
 
         ImageView fullscreenToggle = mPlayerView.findViewById(R.id.exo_fullscreen);
@@ -272,6 +280,7 @@ public class StepFragment extends Fragment {
             mPlayWhenReady = mPlayer.getPlayWhenReady();
             mPlayer.release();
             mPlayer = null;
+            showThumbnail();
         }
     }
 
@@ -289,7 +298,7 @@ public class StepFragment extends Fragment {
         }
 
         @Override
-        public void onSkipToPrevious() {
+        public void onStop() {
             mPlayWhenReady = false;
             mPlayer.setPlayWhenReady(false);
             mPlayer.seekTo(0);
@@ -299,12 +308,23 @@ public class StepFragment extends Fragment {
     private class ExoEventCallback implements Player.EventListener {
         @Override
         public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+            //Check Player for null, as it seems to cause a crash when calling getCurrentPosition()
+            //in certain situations when the EventListener is called after a device rotation.
+            if (mPlayer == null) {
+                return;
+            }
             if (playbackState == Player.STATE_READY && playWhenReady) {
                 mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
                         mPlayer.getCurrentPosition(), 1f);
             } else if (playbackState == Player.STATE_READY) {
                 mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
                         mPlayer.getCurrentPosition(), 1f);
+            } else if (playbackState == Player.STATE_ENDED) {
+                mPlayWhenReady = false;
+                mPlayer.setPlayWhenReady(false);
+                mPlayer.seekTo(0);
+                mStateBuilder.setState(PlaybackStateCompat.STATE_STOPPED,
+                        0, 1f);
             }
             mMediaSession.setPlaybackState(mStateBuilder.build());
         }
@@ -313,7 +333,7 @@ public class StepFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (Util.SDK_INT < 24 && mIsPlayerInitialised) {
+        if (Util.SDK_INT < 24 && mWasPlayerInitialised) {
             releasePlayer();
         }
     }
@@ -321,7 +341,7 @@ public class StepFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if (Util.SDK_INT >= 24 && mIsPlayerInitialised) {
+        if (Util.SDK_INT >= 24 && mWasPlayerInitialised) {
             releasePlayer();
         }
     }
@@ -332,7 +352,7 @@ public class StepFragment extends Fragment {
         outState.putLong(CURRENT_POSITION_KEY, mCurrentPosition);
         outState.putInt(CURRENT_WINDOW_KEY, mCurrentWindowIndex);
         outState.putBoolean(PLAY_WHEN_READY_KEY, mPlayWhenReady);
-        outState.putBoolean(PLAYER_INITIALISED_KEY, mIsPlayerInitialised);
+        outState.putBoolean(PLAYER_INITIALISED_KEY, mWasPlayerInitialised);
     }
 
     @Override

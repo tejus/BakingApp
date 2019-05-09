@@ -81,7 +81,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 .setActions(PlaybackStateCompat.ACTION_PLAY |
                         PlaybackStateCompat.ACTION_PAUSE |
                         PlaybackStateCompat.ACTION_PLAY_PAUSE |
-                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS);
+                        PlaybackStateCompat.ACTION_STOP);
         mMediaSession.setPlaybackState(mStateBuilder.build());
         mMediaSession.setCallback(new MediaSessionCallback());
         mMediaSession.setActive(true);
@@ -142,7 +142,7 @@ public class FullscreenActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onSkipToPrevious() {
+        public void onStop() {
             mPlayWhenReady = false;
             mPlayer.setPlayWhenReady(false);
             mPlayer.seekTo(0);
@@ -152,6 +152,11 @@ public class FullscreenActivity extends AppCompatActivity {
     private class ExoEventCallback implements Player.EventListener {
         @Override
         public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+            //Check Player for null, as it seems to cause a crash when calling getCurrentPosition()
+            //in certain situations when the EventListener is called after a device rotation.
+            if (mPlayer == null) {
+                return;
+            }
             if (playbackState == Player.STATE_READY && playWhenReady) {
                 mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
                         mPlayer.getCurrentPosition(), 1f);
@@ -159,7 +164,11 @@ public class FullscreenActivity extends AppCompatActivity {
                 mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
                         mPlayer.getCurrentPosition(), 1f);
             } else if (playbackState == Player.STATE_ENDED) {
-                exitFullscreen();
+                mPlayWhenReady = false;
+                mPlayer.setPlayWhenReady(false);
+                mPlayer.seekTo(0);
+                mStateBuilder.setState(PlaybackStateCompat.STATE_STOPPED,
+                        0, 1f);
             }
             mMediaSession.setPlaybackState(mStateBuilder.build());
         }
