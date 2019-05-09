@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -62,6 +63,12 @@ public class FullscreenActivity extends AppCompatActivity {
         } else {
             invalidVideo();
         }
+
+        //Enable "Lean back" mode
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE |
+                View.SYSTEM_UI_FLAG_FULLSCREEN |
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
         initialiseMediaSession();
         initialisePlayer();
