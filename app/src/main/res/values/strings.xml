@@ -13,4 +13,6 @@
     <string name="detail_step_overview_number">%1$d.</string>
     <string name="pref_recipe_id_key">recipe_id</string>
     <string name="pref_step_key">step</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>
