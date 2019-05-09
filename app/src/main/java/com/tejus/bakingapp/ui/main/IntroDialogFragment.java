@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tejus.bakingapp.R;
-import com.tejus.bakingapp.data.Repository;
 import com.tejus.bakingapp.model.Recipe;
 import com.tejus.bakingapp.ui.detail.DetailActivity;
 import com.tejus.bakingapp.ui.detail.StepFragment;
@@ -25,19 +24,19 @@ import butterknife.Unbinder;
 public class IntroDialogFragment extends DialogFragment {
 
     private static final String LOG_TAG = IntroDialogFragment.class.getSimpleName();
-    private static final String EXTRA_RECIPE_POSITION_KEY = "position";
+    private static final String EXTRA_RECIPE_KEY = "recipe";
 
     @BindView(R.id.btn_intro_dialog_start)
     MaterialButton mBtnStartCooking;
     private Unbinder mUnbinder;
 
     private Context mContext;
-    int mPosition;
+    Recipe mRecipe;
 
-    public static IntroDialogFragment newInstance(int position) {
+    public static IntroDialogFragment newInstance(Recipe recipe) {
         IntroDialogFragment dialogFragment = new IntroDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(EXTRA_RECIPE_POSITION_KEY, position);
+        bundle.putParcelable(EXTRA_RECIPE_KEY, recipe);
         dialogFragment.setArguments(bundle);
         return dialogFragment;
     }
@@ -61,11 +60,9 @@ public class IntroDialogFragment extends DialogFragment {
         mUnbinder = ButterKnife.bind(this, rootView);
 
         Bundle bundle = getArguments();
-        Recipe recipe = null;
-        if (bundle != null && bundle.containsKey(EXTRA_RECIPE_POSITION_KEY)) {
-            mPosition = bundle.getInt(EXTRA_RECIPE_POSITION_KEY);
-            recipe = Repository.getRecipe(mContext, mPosition);
-            if (recipe == null) throwError();
+        if (bundle != null && bundle.containsKey(EXTRA_RECIPE_KEY)) {
+            mRecipe = bundle.getParcelable(EXTRA_RECIPE_KEY);
+            if (mRecipe == null) throwError();
         } else {
             throwError();
         }
@@ -73,15 +70,15 @@ public class IntroDialogFragment extends DialogFragment {
         if (savedInstanceState == null) {
             FragmentManager fragmentManager = getChildFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.frame_intro_dialog, StepFragment.newInstance(recipe.getSteps().get(0), 0))
+                    .replace(R.id.frame_intro_dialog, StepFragment.newInstance(mRecipe.getSteps().get(0), 0))
                     .commit();
         }
 
-        mBtnStartCooking.setText(getString(R.string.intro_dialog_start, recipe.getName().toLowerCase()));
+        mBtnStartCooking.setText(getString(R.string.intro_dialog_start, mRecipe.getName().toLowerCase()));
         mBtnStartCooking.setOnClickListener((v) -> {
             Intent intent = new Intent(mContext, DetailActivity.class);
             Bundle newBundle = new Bundle();
-            newBundle.putInt(DetailActivity.EXTRA_RECIPE_POSITION_KEY, mPosition);
+            newBundle.putParcelable(DetailActivity.EXTRA_RECIPE_KEY, mRecipe);
             intent.putExtras(newBundle);
             startActivity(intent);
             dismiss();

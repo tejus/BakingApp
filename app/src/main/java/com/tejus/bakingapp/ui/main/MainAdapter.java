@@ -29,6 +29,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
 
     void setRecipes(List<Recipe> recipes) {
         mRecipes = recipes;
+        notifyDataSetChanged();
     }
 
     @NonNull

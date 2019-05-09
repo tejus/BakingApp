@@ -21,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tejus.bakingapp.R;
-import com.tejus.bakingapp.data.Repository;
 import com.tejus.bakingapp.model.Recipe;
 
 import biz.laenger.android.vpbs.BottomSheetUtils;
@@ -31,7 +30,7 @@ import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity implements StepsOverviewAdapter.OnStepAdapterClickListener {
 
-    public static final String EXTRA_RECIPE_POSITION_KEY = "position";
+    public static final String EXTRA_RECIPE_KEY = "recipe";
     public static final String EXTRA_CURRENT_STEP_KEY = "step";
 
     @BindView(R.id.detail_toolbar)
@@ -53,7 +52,6 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
     @BindView(R.id.tv_overview_steps)
     TextView mTvSteps;
 
-    private int mRecipePosition;
     private FragmentManager mFragmentManager;
     private boolean mTwoPane;
     private ActionBar mActionBar;
@@ -73,9 +71,9 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
         mTwoPane = findViewById(R.id.include_card_view) != null;
 
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null && bundle.containsKey(EXTRA_RECIPE_POSITION_KEY)) {
-            mRecipePosition = bundle.getInt(EXTRA_RECIPE_POSITION_KEY);
-            mRecipe = Repository.getRecipe(this, mRecipePosition);
+        if (bundle != null && bundle.containsKey(EXTRA_RECIPE_KEY)) {
+            mRecipe = bundle.getParcelable(EXTRA_RECIPE_KEY);
+            if (mRecipe == null) throwError();
             mTotalSteps = mRecipe.getSteps().size() - 1;
             if (bundle.containsKey(EXTRA_CURRENT_STEP_KEY)) {
                 mCurrentStep = bundle.getInt(EXTRA_CURRENT_STEP_KEY);
@@ -83,8 +81,7 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
                 mCurrentStep = 1;
             }
         } else {
-            Toast.makeText(this, "Invalid recipe!", Toast.LENGTH_SHORT).show();
-            finish();
+            throwError();
         }
 
         setSupportActionBar(mToolbar);
@@ -116,6 +113,11 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
 
         if (!mTwoPane)
             setupBottomSheetBehavior();
+    }
+
+    private void throwError() {
+        Toast.makeText(this, "Invalid recipe!", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     private void setupBottomSheetBehavior() {
@@ -305,7 +307,7 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
         if (mFinished) {
             preferencesEditor.clear();
         } else {
-            preferencesEditor.putInt(getString(R.string.pref_recipe_key), mRecipePosition);
+            preferencesEditor.putInt(getString(R.string.pref_recipe_id_key), mRecipe.getId());
             preferencesEditor.putInt(getString(R.string.pref_step_key), mCurrentStep);
         }
         preferencesEditor.apply();

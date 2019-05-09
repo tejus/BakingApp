@@ -20,6 +20,7 @@ import com.tejus.bakingapp.R;
 import com.tejus.bakingapp.data.Repository;
 import com.tejus.bakingapp.model.Recipe;
 import com.tejus.bakingapp.ui.detail.DetailActivity;
+import com.tejus.bakingapp.utilities.AppExecutors;
 
 import java.util.List;
 
@@ -37,6 +38,10 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.OnRec
     @BindView(R.id.rv_main)
     RecyclerView mRecyclerView;
 
+    private List<Recipe> mRecipes;
+    private MainAdapter mAdapter;
+    private boolean mRecipesLoaded;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,19 +50,36 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.OnRec
 
         setSupportActionBar(mToolbar);
 
-        List<Recipe> recipes = Repository.getRecipes(this);
-        MainAdapter adapter = new MainAdapter(this);
-        adapter.setRecipes(recipes);
+        mAdapter = new MainAdapter(this);
         int columnCount = columnCount();
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, columnCount));
         mRecyclerView.addItemDecoration(new GridLayoutItemDecoration(gridSpacing(), columnCount));
-        mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecipesLoaded = false;
+    }
+
+    private void loadRecipes() {
+        if (mRecipesLoaded) {
+            checkPreviousProgress();
+            return;
+        }
+
+        AppExecutors.getInstance().networkIO().execute(() -> {
+            mRecipes = Repository.getRecipes();
+            AppExecutors.getInstance().mainThread().execute(() -> {
+                if (mRecipes != null) {
+                    mAdapter.setRecipes(mRecipes);
+                    mRecipesLoaded = true;
+                    checkPreviousProgress();
+                }
+            });
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        checkPreviousProgress();
+        loadRecipes();
     }
 
     private int gridSpacing() {
@@ -81,19 +103,24 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.OnRec
 
     private void checkPreviousProgress() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        int recipePosition = preferences.getInt(getString(R.string.pref_recipe_key), -1);
-        if (recipePosition > -1) {
+        int recipeId = preferences.getInt(getString(R.string.pref_recipe_id_key), -1);
+        if (recipeId > -1) {
             int currentStep = preferences.getInt(getString(R.string.pref_step_key), -1);
             if (currentStep > 0) {
-                final Intent intent = new Intent(this, DetailActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putInt(DetailActivity.EXTRA_RECIPE_POSITION_KEY, recipePosition);
-                bundle.putInt(DetailActivity.EXTRA_CURRENT_STEP_KEY, currentStep);
-                intent.putExtras(bundle);
-                mBarContinue.setVisibility(View.VISIBLE);
-                String name = Repository.getRecipe(this, recipePosition).getName();
-                mTvContinue.setText(getString(R.string.main_continue, name, currentStep));
-                mBarContinue.setOnClickListener((v) -> startActivity(intent));
+                for (Recipe recipe : mRecipes) {
+                    if (recipe.getId() == recipeId) {
+                        final Intent intent = new Intent(this, DetailActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(DetailActivity.EXTRA_RECIPE_KEY, recipe);
+                        bundle.putInt(DetailActivity.EXTRA_CURRENT_STEP_KEY, currentStep);
+                        intent.putExtras(bundle);
+                        String name = recipe.getName();
+                        mBarContinue.setVisibility(View.VISIBLE);
+                        mTvContinue.setText(getString(R.string.main_continue, name, currentStep));
+                        mBarContinue.setOnClickListener((v) -> startActivity(intent));
+                        return;
+                    }
+                }
             }
         } else {
             mBarContinue.setVisibility(View.GONE);
@@ -110,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.OnRec
         }
         transaction.addToBackStack(null);
 
-        DialogFragment newDialog = IntroDialogFragment.newInstance(position);
+        DialogFragment newDialog = IntroDialogFragment.newInstance(mRecipes.get(position));
         newDialog.show(transaction, "dialog");
     }
 }
