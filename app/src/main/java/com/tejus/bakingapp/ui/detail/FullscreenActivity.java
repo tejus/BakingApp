@@ -176,6 +176,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 mPlayer.seekTo(0);
                 mStateBuilder.setState(PlaybackStateCompat.STATE_STOPPED,
                         0, 1f);
+                exitFullscreen();
             }
             mMediaSession.setPlaybackState(mStateBuilder.build());
         }
