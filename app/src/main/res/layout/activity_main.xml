@@ -26,7 +26,7 @@
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/main_vertical_margin"
         android:layout_marginEnd="@dimen/main_vertical_margin"
-        app:layout_constraintBottom_toBottomOf="@+id/bar_continue"
+        app:layout_constraintBottom_toTopOf="@+id/bar_continue"
         app:layout_constraintTop_toBottomOf="@+id/main_toolbar" />
 
     <LinearLayout
