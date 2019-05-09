@@ -28,6 +28,8 @@ import biz.laenger.android.vpbs.ViewPagerBottomSheetBehavior;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tejus.bakingapp.widget.IngredientsWidgetService.startActionUpdateLatestRecipe;
+
 public class DetailActivity extends AppCompatActivity implements StepsOverviewAdapter.OnStepAdapterClickListener {
 
     public static final String EXTRA_RECIPE_KEY = "recipe";
@@ -311,6 +313,7 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
             preferencesEditor.putInt(getString(R.string.pref_step_key), mCurrentStep);
         }
         preferencesEditor.apply();
+        startActionUpdateLatestRecipe(this);
     }
 
     @Override
