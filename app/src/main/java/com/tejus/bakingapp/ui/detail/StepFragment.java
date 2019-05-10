@@ -64,6 +64,7 @@ public class StepFragment extends Fragment {
     private Context mContext;
     private Step mStep;
     private boolean mHasVideo;
+    //Keep track of whether video was initialised in order to restore state whenever required
     private boolean mWasPlayerInitialised;
     private SimpleExoPlayer mPlayer;
     private long mCurrentPosition;
@@ -110,26 +111,30 @@ public class StepFragment extends Fragment {
                     + " must pass a Step object to fragment!");
         }
 
+        //Run through the data in mStep, initialise views as required
         if (mStep != null) {
             mTvStepHeading.setText(mStep.getShortDescription());
+            //Do not show the step description for the Introduction step
             if (stepCount == 0) {
                 mTvStepDesc.setVisibility(View.GONE);
             } else {
                 mTvStepDesc.setText(mStep.getDescription());
             }
-            if (!TextUtils.isEmpty(mStep.getThumbnailURL())) {
-                mPreviewFrame.setVisibility(View.VISIBLE);
-                loadThumbnail();
-            }
+
+            //Setup video if there is a videoURL
             if (!TextUtils.isEmpty(mStep.getVideoURL())) {
-                mPreviewFrame.setVisibility(View.VISIBLE);
-                mHasVideo = true;
-                initialiseMediaSession();
+                setupVideo();
             } else {
                 mHasVideo = false;
             }
+
+            //Setup thumbnail if there is a thumbnailURL
+            if (!TextUtils.isEmpty(mStep.getThumbnailURL())) {
+                setupThumbnail();
+            }
         }
 
+        //Restore video playback state from previous instance, if both exist
         if (savedInstanceState != null && mHasVideo) {
             mCurrentPosition = savedInstanceState.getLong(CURRENT_POSITION_KEY);
             mCurrentWindowIndex = savedInstanceState.getInt(CURRENT_WINDOW_KEY);
@@ -144,6 +149,35 @@ public class StepFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return rootView;
+    }
+
+    private void setupVideo() {
+        mPreviewFrame.setVisibility(View.VISIBLE);
+        mHasVideo = true;
+        initialiseMediaSession();
+    }
+
+    private void setupThumbnail() {
+        //In case the video has been set to thumbnailURL instead of videoURL, catch it here
+        if (!mHasVideo) {
+            String thumbnailUrl = mStep.getThumbnailURL();
+            if (TextUtils.equals(thumbnailUrl.substring(thumbnailUrl.length() - 3), "mp4")) {
+                mStep.setVideoURL(thumbnailUrl);
+                setupVideo();
+                return;
+            }
+        }
+        mPreviewFrame.setVisibility(View.VISIBLE);
+        loadThumbnail();
+    }
+
+    private void loadThumbnail() {
+        showThumbnail();
+        Picasso.get()
+                .load(Uri.parse(mStep.getThumbnailURL()))
+                .placeholder(R.color.colorPrimaryDark)
+                .error(R.color.colorGrey)
+                .into(mIvPreview);
     }
 
     @Override
@@ -166,15 +200,6 @@ public class StepFragment extends Fragment {
             } else if (mHasVideo) {
                 showVideoOverlay();
             }
-    }
-
-    private void loadThumbnail() {
-        showThumbnail();
-        Picasso.get()
-                .load(Uri.parse(mStep.getThumbnailURL()))
-                .placeholder(R.color.colorPrimaryDark)
-                .error(R.color.colorGrey)
-                .into(mIvPreview);
     }
 
     private void initialiseMediaSession() {
