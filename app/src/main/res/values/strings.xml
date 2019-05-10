@@ -14,4 +14,5 @@
     <string name="pref_recipe_id_key">recipe_id</string>
     <string name="pref_step_key">step</string>
     <string name="add_widget">Add widget</string>
+    <string name="ingredients_widget_empty">Start cooking!</string>
 </resources>

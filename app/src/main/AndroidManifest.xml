@@ -14,16 +14,6 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
-        <receiver android:name=".widget.IngredientsWidgetProvider">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/ingredients_widget_info" />
-        </receiver>
-
         <activity
             android:name=".ui.detail.FullscreenActivity"
             android:screenOrientation="sensorLandscape"
@@ -45,7 +35,21 @@
             android:parentActivityName=".ui.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name=".widget.IngredientsWidgetService" />
+        <receiver android:name=".ingredientswidget.IngredientsWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ingredients_widget_info" />
+        </receiver>
+
+        <service android:name=".ingredientswidget.IngredientsWidgetService" />
+
+        <service
+            android:name=".ingredientswidget.IngredientsListWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>
