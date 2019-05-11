@@ -3,6 +3,7 @@ package com.tejus.bakingapp.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Recipe implements Parcelable {
@@ -113,5 +114,36 @@ public class Recipe implements Parcelable {
             }
         }
         return null;
+    }
+
+    public static Recipe getTestRecipe() {
+        Ingredient ingredient = new Ingredient(25.75,
+                "kg",
+                "Butter");
+        List<Ingredient> ingredients = new ArrayList<>();
+        ingredients.add(ingredient);
+
+        Step stepOne = new Step(0,
+                "Test step one",
+                "Sample step one created to run UI Tests with Espresso",
+                "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffddf0_-intro-yellow-cake/-intro-yellow-cake.mp4",
+                "");
+
+
+        Step stepTwo = new Step(1,
+                "Test step two",
+                "Sample step two created to run UI Tests with Espresso",
+                "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffddf0_-intro-yellow-cake/-intro-yellow-cake.mp4",
+                "");
+        List<Step> steps = new ArrayList<>();
+        steps.add(stepOne);
+        steps.add(stepTwo);
+
+        return new Recipe(5,
+                "Test Recipe",
+                ingredients,
+                steps,
+                5,
+                "");
     }
 }
