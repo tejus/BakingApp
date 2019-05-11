@@ -50,6 +50,23 @@ public class FullscreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fullscreen);
         ButterKnife.bind(this);
 
+        //Load the video to be played
+        getIntentData();
+
+        //Enable "Lean back" mode
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE |
+                View.SYSTEM_UI_FLAG_FULLSCREEN |
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
+        initialiseMediaSession();
+        initialisePlayer();
+    }
+
+    /**
+     * Load and verify the video and playback state from the launch intent
+     */
+    private void getIntentData() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null &&
                 bundle.containsKey(EXTRA_VIDEO_URL_KEY) &&
@@ -63,22 +80,19 @@ public class FullscreenActivity extends AppCompatActivity {
         } else {
             invalidVideo();
         }
-
-        //Enable "Lean back" mode
-        View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE |
-                View.SYSTEM_UI_FLAG_FULLSCREEN |
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-
-        initialiseMediaSession();
-        initialisePlayer();
     }
 
+    /**
+     * Close activity and display a toast in case the video is invalid
+     */
     private void invalidVideo() {
         Toast.makeText(this, "Invalid video!", Toast.LENGTH_SHORT).show();
         finish();
     }
 
+    /**
+     * Helper method to start the MediaSession
+     */
     private void initialiseMediaSession() {
         mMediaSession = new MediaSessionCompat(this, LOG_TAG);
         mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
@@ -94,6 +108,9 @@ public class FullscreenActivity extends AppCompatActivity {
         mMediaSession.setActive(true);
     }
 
+    /**
+     * Helper method to start the ExoPlayer instance
+     */
     private void initialisePlayer() {
         String userAgent = Util.getUserAgent(this, "BakingApp");
 
@@ -125,6 +142,9 @@ public class FullscreenActivity extends AppCompatActivity {
         fullscreenIcon.setOnClickListener((v) -> exitFullscreen());
     }
 
+    /**
+     * Helper method to release the ExoPlayer instance
+     */
     private void releasePlayer() {
         if (mPlayer != null) {
             mCurrentPosition = mPlayer.getCurrentPosition();
@@ -182,6 +202,10 @@ public class FullscreenActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Helper method to end the activity and set the result with
+     * the current playback state
+     */
     private void exitFullscreen() {
         Intent intent = new Intent();
         mCurrentPosition = mPlayer.getCurrentPosition();
