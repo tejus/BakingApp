@@ -180,6 +180,14 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
                 public void onSlide(@NonNull View view, float v) {
                 }
             });
+
+            //Add a bounce to the BottomSheet as a hint
+            mSheetLayout.animate().translationY(-100).setDuration(500).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mSheetLayout.animate().translationY(0).setDuration(500);
+                }
+            });
         }
     }
 
