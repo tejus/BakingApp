@@ -71,30 +71,81 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
 
-        mTwoPane = findViewById(R.id.include_card_view) != null;
+        //Load and verify recipe and current step, if any, from the launch intent
+        getIntentData();
 
+        //Proceed with view setup and variable initialisation only after verifying Intent data
+        setupToolbar();
+
+        mFinished = false;
+        mFragmentManager = getSupportFragmentManager();
+
+        restoreState(savedInstanceState);
+
+        //Hide the back button if the activity launches to the first step
+        if (mCurrentStep == 1) {
+            mIvBack.setVisibility(View.INVISIBLE);
+        }
+
+        //Setup ViewPager for the ingredients and steps list
+        DetailOverviewPagerAdapter overviewPagerAdapter =
+                new DetailOverviewPagerAdapter(mFragmentManager, mRecipe);
+        mOverviewViewPager.setAdapter(overviewPagerAdapter);
+        mOverviewViewPager.addOnPageChangeListener(mOverviewTabChangeCallback);
+
+        //Check if Two Pane layout has been inflated
+        mTwoPane = findViewById(R.id.include_card_view) != null;
+        //Setup the BottomSheetBehavior only if the layout is not Two Pane
+        if (!mTwoPane)
+            setupBottomSheetBehavior();
+    }
+
+    /**
+     * Load and verify recipe and current step, if any, from the launch intent
+     */
+    private void getIntentData() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null && bundle.containsKey(EXTRA_RECIPE_KEY)) {
             mRecipe = bundle.getParcelable(EXTRA_RECIPE_KEY);
-            if (mRecipe == null) throwError();
+            if (mRecipe == null) {
+                throwError();
+                return;
+            }
             mTotalSteps = mRecipe.getSteps().size() - 1;
             if (bundle.containsKey(EXTRA_CURRENT_STEP_KEY)) {
                 mCurrentStep = bundle.getInt(EXTRA_CURRENT_STEP_KEY);
             } else {
+                //Start with the second step since we display
+                //the Introduction in a Dialog in MainActivity
                 mCurrentStep = 1;
             }
         } else {
             throwError();
         }
+    }
 
+    /**
+     * Close activity and display a toast in case the recipe is invalid
+     */
+    private void throwError() {
+        Toast.makeText(this, "Invalid recipe!", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    private void setupToolbar() {
         setSupportActionBar(mToolbar);
         mActionBar = getSupportActionBar();
-        if (mActionBar != null) {
+        if (mActionBar != null)
             mActionBar.setDisplayHomeAsUpEnabled(true);
+        if (mRecipe.getName() != null) {
             mActionBar.setTitle(mRecipe.getName());
         }
+    }
 
-        mFragmentManager = getSupportFragmentManager();
+    /**
+     * Restore previous state in case of configuration change
+     */
+    private void restoreState(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             loadFragment(mCurrentStep);
         } else {
@@ -102,36 +153,39 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
             updateNavIcons(mCurrentStep);
             updateToolbar();
         }
-
-        if (mCurrentStep == 1) {
-            mIvBack.setVisibility(View.INVISIBLE);
-        }
-
-        mFinished = false;
-
-        DetailOverviewPagerAdapter overviewPagerAdapter =
-                new DetailOverviewPagerAdapter(mFragmentManager, mRecipe);
-        mOverviewViewPager.setAdapter(overviewPagerAdapter);
-        mOverviewViewPager.addOnPageChangeListener(mOverviewTabChangeCallback);
-
-        if (!mTwoPane)
-            setupBottomSheetBehavior();
     }
 
-    private void throwError() {
-        Toast.makeText(this, "Invalid recipe!", Toast.LENGTH_SHORT).show();
-        finish();
-    }
-
+    /**
+     * Setup BottomSheetBehavior and load callbacks for its state changes
+     */
     private void setupBottomSheetBehavior() {
-        BottomSheetUtils.setupViewPager(mOverviewViewPager);
-        mSheetBehavior = ViewPagerBottomSheetBehavior.from(mSheetLayout);
-        mSheetState = mSheetBehavior.getState();
-        mTvIngredients.post(() -> mTvIngredients.setTranslationY(mTvIngredients.getHeight()));
-        mTvSteps.post(() -> mTvSteps.setTranslationY(mTvSteps.getHeight()));
-        mSheetBehavior.setBottomSheetCallback(mSheetCallback);
+        if (mSheetLayout != null) {
+            BottomSheetUtils.setupViewPager(mOverviewViewPager);
+            mSheetBehavior = ViewPagerBottomSheetBehavior.from(mSheetLayout);
+            mSheetState = mSheetBehavior.getState();
+            mTvIngredients.post(() -> mTvIngredients.setTranslationY(mTvIngredients.getHeight()));
+            mTvSteps.post(() -> mTvSteps.setTranslationY(mTvSteps.getHeight()));
+            mSheetBehavior.setBottomSheetCallback(new ViewPagerBottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                public void onStateChanged(@NonNull View view, int i) {
+                    mSheetState = i;
+                    if (mSheetState == ViewPagerBottomSheetBehavior.STATE_COLLAPSED) {
+                        sheetCollapseAnimation();
+                    } else if (mSheetState == ViewPagerBottomSheetBehavior.STATE_EXPANDED) {
+                        sheetExpandAnimation();
+                    }
+                }
+
+                @Override
+                public void onSlide(@NonNull View view, float v) {
+                }
+            });
+        }
     }
 
+    /**
+     * Helper method to load StepFragments at a given step
+     */
     private void loadFragment(int position) {
         mFragmentManager.beginTransaction()
                 .replace(R.id.frame_steps, getStepFragment(position))
@@ -141,6 +195,16 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
         updateToolbar();
     }
 
+    /**
+     * Helper method to retrieve StepFragment instances at a given step
+     */
+    private Fragment getStepFragment(int position) {
+        return StepFragment.newInstance(mRecipe.getSteps().get(position), position);
+    }
+
+    /**
+     * Helper method to display the correct navigation icons on the bottom bar
+     */
     private void updateNavIcons(int position) {
         if (position == mTotalSteps) {
             mIvForward.setImageDrawable(
@@ -169,30 +233,12 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
         }
     }
 
-    private Fragment getStepFragment(int position) {
-        return StepFragment.newInstance(mRecipe.getSteps().get(position), position);
-    }
-
+    /**
+     * Helper method to update the toolbar with the current step number
+     */
     private void updateToolbar() {
         mActionBar.setSubtitle(getString(R.string.detail_step_number, (mCurrentStep)));
     }
-
-    private ViewPagerBottomSheetBehavior.BottomSheetCallback mSheetCallback =
-            new ViewPagerBottomSheetBehavior.BottomSheetCallback() {
-                @Override
-                public void onStateChanged(@NonNull View view, int i) {
-                    mSheetState = i;
-                    if (mSheetState == ViewPagerBottomSheetBehavior.STATE_COLLAPSED) {
-                        sheetCollapseAnimation();
-                    } else if (mSheetState == ViewPagerBottomSheetBehavior.STATE_EXPANDED) {
-                        sheetExpandAnimation();
-                    }
-                }
-
-                @Override
-                public void onSlide(@NonNull View view, float v) {
-                }
-            };
 
     private ViewPager.SimpleOnPageChangeListener mOverviewTabChangeCallback =
             new ViewPager.SimpleOnPageChangeListener() {
@@ -255,30 +301,43 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
             onBackPressed();
     }
 
+    /**
+     * Method to animate the Bottom Sheet views when it is collapsing
+     */
     private void sheetCollapseAnimation() {
-        mIvBack.animate().translationX(0);
-        mIvForward.animate().translationX(0);
-        mTvOverview.animate().translationY(0);
-        mTvIngredients.setClickable(false);
-        mTvIngredients.setFocusable(false);
-        mTvIngredients.animate().translationY(mTvIngredients.getHeight());
-        mTvSteps.setClickable(false);
-        mTvSteps.setFocusable(false);
-        mTvSteps.animate().translationY(mTvSteps.getHeight());
+        if (mTvOverview != null) {
+            mIvBack.animate().translationX(0);
+            mIvForward.animate().translationX(0);
+            mTvOverview.animate().translationY(0);
+            mTvIngredients.setClickable(false);
+            mTvIngredients.setFocusable(false);
+            mTvIngredients.animate().translationY(mTvIngredients.getHeight());
+            mTvSteps.setClickable(false);
+            mTvSteps.setFocusable(false);
+            mTvSteps.animate().translationY(mTvSteps.getHeight());
+        }
     }
 
+    /**
+     * Method to animate the Bottom Sheet views when it is expanding
+     */
     private void sheetExpandAnimation() {
-        mIvBack.animate().translationX(-mIvBack.getWidth());
-        mIvForward.animate().translationX(mIvForward.getWidth());
-        mTvOverview.animate().translationY(-mTvOverview.getHeight());
-        mTvIngredients.setClickable(true);
-        mTvIngredients.setFocusable(true);
-        mTvIngredients.animate().translationY(0);
-        mTvSteps.setClickable(true);
-        mTvSteps.setFocusable(true);
-        mTvSteps.animate().translationY(0);
+        if (mTvOverview != null) {
+            mIvBack.animate().translationX(-mIvBack.getWidth());
+            mIvForward.animate().translationX(mIvForward.getWidth());
+            mTvOverview.animate().translationY(-mTvOverview.getHeight());
+            mTvIngredients.setClickable(true);
+            mTvIngredients.setFocusable(true);
+            mTvIngredients.animate().translationY(0);
+            mTvSteps.setClickable(true);
+            mTvSteps.setFocusable(true);
+            mTvSteps.animate().translationY(0);
+        }
     }
 
+    /**
+     * Helper method to save the progress through the current recipe, if it is not finished
+     */
     private void saveCurrentProgress() {
         SharedPreferences.Editor preferencesEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
         if (mFinished) {
@@ -295,6 +354,7 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
 
     @Override
     public void onBackPressed() {
+        //Capture the back press if the Bottom Sheet is expanded, to collapse it
         if (!mTwoPane
                 && mSheetState != ViewPagerBottomSheetBehavior.STATE_COLLAPSED) {
             mSheetBehavior.setState(ViewPagerBottomSheetBehavior.STATE_COLLAPSED);
@@ -306,6 +366,7 @@ public class DetailActivity extends AppCompatActivity implements StepsOverviewAd
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        //Capture the back press if the Bottom Sheet is expanded, to collapse it
         if (item.getItemId() == android.R.id.home) {
             if (!mTwoPane
                     && mSheetState != ViewPagerBottomSheetBehavior.STATE_COLLAPSED) {
