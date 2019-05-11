@@ -58,6 +58,9 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.OnRec
         mRecipesLoaded = false;
     }
 
+    /**
+     * Load the recipe asynchronously using Executors and setup the adapter after it is loaded
+     */
     private void loadRecipes() {
         if (mRecipesLoaded) {
             checkPreviousProgress();
@@ -82,13 +85,18 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.OnRec
         loadRecipes();
     }
 
+    /**
+     * Helper method to determine the grid spacing
+     */
     private int gridSpacing() {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int spacing = (int) (getResources()
+        return (int) (getResources()
                 .getDimension(R.dimen.main_vertical_spacing) / displayMetrics.density);
-        return spacing;
     }
 
+    /**
+     * Helper method to determine the column count based on the display width
+     */
     private int columnCount() {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
@@ -101,11 +109,15 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.OnRec
         return columnCount;
     }
 
+    /**
+     * Helper method to show the Continue progress bar if required
+     */
     private void checkPreviousProgress() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         int recipeId = preferences.getInt(getString(R.string.pref_recipe_id_key), -1);
         if (recipeId > -1) {
             int currentStep = preferences.getInt(getString(R.string.pref_step_key), -1);
+            //Show the bar only if the recipe has been progressed beyond the introduction step
             if (currentStep > 0) {
                 Recipe recipe = Recipe.getById(mRecipes, recipeId);
                 if (recipe == null) {
@@ -137,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.OnRec
         }
         transaction.addToBackStack(null);
 
+        //Launch the Introduction Dialog when a recipe is clicked
         DialogFragment newDialog = IntroDialogFragment.newInstance(mRecipes.get(position));
         newDialog.show(transaction, "dialog");
     }
