@@ -34,6 +34,9 @@ public class IngredientsFragment extends Fragment {
         // Required empty public constructor
     }
 
+    /**
+     * Helper static method to obtain an instance of IngredientsFragment
+     */
     public static Fragment newInstance(Recipe recipe) {
         Fragment fragment = new IngredientsFragment();
         if (recipe != null) {
