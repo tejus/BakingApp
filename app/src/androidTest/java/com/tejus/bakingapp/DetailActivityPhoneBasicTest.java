@@ -27,7 +27,8 @@ public class DetailActivityPhoneBasicTest {
 
     /**
      * Tests the BottomSheetBehavior along with Ingredient and Step ViewPager
-     * on layouts with width less than 600dp
+     * on layouts with width less than 600dp. Set a delay between clicks for
+     * animations to complete, even on slow emulators
      */
     @Test
     public void clickOverviewStep_ShowsStepRecyclerView() {
@@ -44,21 +45,21 @@ public class DetailActivityPhoneBasicTest {
         onView(withId(R.id.rv_ingredients)).check(matches(isDisplayed()));
         onView(withId(R.id.tv_overview_steps)).perform(click());
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         onView(withId(R.id.rv_steps)).check(matches(isDisplayed()));
         onView(withId(R.id.tv_overview_ingredients)).perform(click());
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         onView(withId(R.id.rv_ingredients)).check(matches(isDisplayed()));
         Espresso.pressBack();
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

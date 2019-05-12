@@ -26,7 +26,8 @@ public class DetailActivityTabletBasicTest {
 
     /**
      * Tests the Ingredient and Step ViewPager on layouts with width more than 600dp
-     * when landscape and more than 720dp when portrait
+     * when landscape and more than 720dp when portrait. Set a delay between clicks for
+     * animations to complete, even on slow emulators
      */
     @Test
     public void clickOverviewStep_ShowsStepRecyclerView() {
@@ -38,14 +39,14 @@ public class DetailActivityTabletBasicTest {
         onView(withId(R.id.rv_ingredients)).check(matches(isDisplayed()));
         onView(withId(R.id.tv_overview_steps)).perform(click());
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         onView(withId(R.id.rv_steps)).check(matches(isDisplayed()));
         onView(withId(R.id.tv_overview_ingredients)).perform(click());
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
