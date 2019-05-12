@@ -14,6 +14,11 @@ import com.tejus.bakingapp.model.Recipe;
 import com.tejus.bakingapp.ui.detail.DetailActivity;
 import com.tejus.bakingapp.ui.main.MainActivity;
 
+/**
+ * Widget that shows the ingredients list for the current recipe and launches
+ * the recipe's current step on click
+ * If there isn't a recipe in progress, it launches MainActivity on click
+ */
 public class IngredientsWidgetProvider extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
@@ -27,6 +32,9 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
         PendingIntent pendingIntentMainActivity = PendingIntent.getActivity(context, 1256,
                 launchMainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        //If there is a recipe in progress, show the ingredients for that recipe
+        //and launch the current step on clicking the widget's top bar
+        //If there isn't a recipe in progress, launch MainActivity on click
         if (recipe != null && currentStep > 0) {
             //Setup an intent to launch DetailActivity at the current recipe and step
             Intent launchDetailActivityIntent;
