@@ -63,8 +63,9 @@ public class StepFragment extends Fragment {
 
     private Context mContext;
     private Step mStep;
+    private int mStepCount;
     private boolean mHasVideo;
-    //Keep track of whether video was initialised in order to restore state whenever required
+    //Keep track of whether player was initialised in order to restore state
     private boolean mWasPlayerInitialised;
     private SimpleExoPlayer mPlayer;
     private long mCurrentPosition;
@@ -83,6 +84,9 @@ public class StepFragment extends Fragment {
         mContext = context;
     }
 
+    /**
+     * Helper static method to obtain an instance of StepFragment
+     */
     public static Fragment newInstance(Step step, int stepCount) {
         Fragment fragment = new StepFragment();
         if (step != null) {
@@ -102,22 +106,35 @@ public class StepFragment extends Fragment {
         mUnbinder = ButterKnife.bind(this, rootView);
 
         Bundle bundle = getArguments();
-        int stepCount;
         if (bundle != null && bundle.containsKey(EXTRA_STEP_KEY)) {
             mStep = bundle.getParcelable(EXTRA_STEP_KEY);
-            stepCount = bundle.getInt(EXTRA_STEP_COUNT_KEY);
+            mStepCount = bundle.getInt(EXTRA_STEP_COUNT_KEY);
         } else {
             throw new ClassCastException(rootView.getContext().toString()
                     + " must pass a Step object to fragment!");
         }
 
-        //Run through the data in mStep, initialise views as required
+        validateStep();
+
+        //Restore video playback state from previous instance, if both exist
+        restoreState(savedInstanceState);
+
+        // Inflate the layout for this fragment
+        return rootView;
+    }
+
+    /**
+     * Run through the data in mStep, initialise views as required
+     */
+    private void validateStep() {
         if (mStep != null) {
-            mTvStepHeading.setText(mStep.getShortDescription());
+            if (!TextUtils.isEmpty(mStep.getShortDescription())) {
+                mTvStepHeading.setText(mStep.getShortDescription());
+            }
             //Do not show the step description for the Introduction step
-            if (stepCount == 0) {
+            if (mStepCount == 0) {
                 mTvStepDesc.setVisibility(View.GONE);
-            } else {
+            } else if (!TextUtils.isEmpty(mStep.getDescription())) {
                 mTvStepDesc.setText(mStep.getDescription());
             }
 
@@ -133,23 +150,11 @@ public class StepFragment extends Fragment {
                 setupThumbnail();
             }
         }
-
-        //Restore video playback state from previous instance, if both exist
-        if (savedInstanceState != null && mHasVideo) {
-            mCurrentPosition = savedInstanceState.getLong(CURRENT_POSITION_KEY);
-            mCurrentWindowIndex = savedInstanceState.getInt(CURRENT_WINDOW_KEY);
-            mPlayWhenReady = savedInstanceState.getBoolean(PLAY_WHEN_READY_KEY);
-            mWasPlayerInitialised = savedInstanceState.getBoolean(PLAYER_INITIALISED_KEY);
-        } else {
-            mCurrentPosition = C.TIME_UNSET;
-            mCurrentWindowIndex = C.INDEX_UNSET;
-            mPlayWhenReady = false;
-            mWasPlayerInitialised = false;
-        }
-
-        // Inflate the layout for this fragment
-        return rootView;
     }
+
+    /**
+     * Helper method to show the PlayerView and start the MediaSession
+     */
 
     private void setupVideo() {
         mPreviewFrame.setVisibility(View.VISIBLE);
@@ -157,6 +162,9 @@ public class StepFragment extends Fragment {
         initialiseMediaSession();
     }
 
+    /**
+     * Helper method to show the thumbnail view and validate the URL
+     */
     private void setupThumbnail() {
         //In case the video has been set to thumbnailURL instead of videoURL, catch it here
         if (!mHasVideo) {
@@ -171,6 +179,9 @@ public class StepFragment extends Fragment {
         loadThumbnail();
     }
 
+    /**
+     * Helper method to load the thumbnail image
+     */
     private void loadThumbnail() {
         showThumbnail();
         Picasso.get()
@@ -178,6 +189,23 @@ public class StepFragment extends Fragment {
                 .placeholder(R.color.colorPrimaryDark)
                 .error(R.color.colorGrey)
                 .into(mIvPreview);
+    }
+
+    /**
+     * Restore previous state in case of configuration change
+     */
+    private void restoreState(Bundle savedInstanceState) {
+        if (savedInstanceState != null && mHasVideo) {
+            mCurrentPosition = savedInstanceState.getLong(CURRENT_POSITION_KEY);
+            mCurrentWindowIndex = savedInstanceState.getInt(CURRENT_WINDOW_KEY);
+            mPlayWhenReady = savedInstanceState.getBoolean(PLAY_WHEN_READY_KEY);
+            mWasPlayerInitialised = savedInstanceState.getBoolean(PLAYER_INITIALISED_KEY);
+        } else {
+            mCurrentPosition = C.TIME_UNSET;
+            mCurrentWindowIndex = C.INDEX_UNSET;
+            mPlayWhenReady = false;
+            mWasPlayerInitialised = false;
+        }
     }
 
     @Override
@@ -202,6 +230,9 @@ public class StepFragment extends Fragment {
             }
     }
 
+    /**
+     * Helper method to start the MediaSession
+     */
     private void initialiseMediaSession() {
         mMediaSession = new MediaSessionCompat(mContext, LOG_TAG);
         mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
@@ -217,6 +248,9 @@ public class StepFragment extends Fragment {
         mMediaSession.setActive(true);
     }
 
+    /**
+     * Helper method to show a clickable overlay on the PlayerView
+     */
     private void showVideoOverlay() {
         mIvVideoOverlay.setVisibility(View.VISIBLE);
         mIvVideoOverlay.setOnClickListener((v) -> {
@@ -225,17 +259,26 @@ public class StepFragment extends Fragment {
         });
     }
 
+    /**
+     * Helper method to show the thumbnail and hide the PlayerView
+     */
     private void showThumbnail() {
         mPlayerView.setVisibility(View.GONE);
         mIvPreview.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Helper method to show the PlayerView and hide the overlay and thumbnail
+     */
     private void showVideo() {
         mPlayerView.setVisibility(View.VISIBLE);
         mIvPreview.setVisibility(View.GONE);
         mIvVideoOverlay.setVisibility(View.GONE);
     }
 
+    /**
+     * Helper method to start the ExoPlayer instance
+     */
     private void initialisePlayer() {
         showVideo();
         String userAgent = Util.getUserAgent(mContext, "BakingApp");
@@ -269,6 +312,9 @@ public class StepFragment extends Fragment {
         fullscreenToggle.setOnClickListener((v) -> enterFullscreen());
     }
 
+    /**
+     * Helper method to launch FullscreenActivity with the playback state and data
+     */
     private void enterFullscreen() {
         Intent intent = new Intent(mContext, FullscreenActivity.class);
         Bundle bundle = new Bundle();
@@ -298,6 +344,9 @@ public class StepFragment extends Fragment {
         }
     }
 
+    /**
+     * Helper method to release the ExoPlayer instance
+     */
     private void releasePlayer() {
         if (mPlayer != null) {
             mCurrentPosition = mPlayer.getCurrentPosition();
